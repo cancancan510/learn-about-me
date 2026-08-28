@@ -1,0 +1,2882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAN的星露谷成长小镇</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #4A9B8E;
+            --teal-dark: #3A7D72;
+            --cream: #FDF6E3;
+            --cream-dark: #F5EAD6;
+            --gold: #E8C872;
+            --gold-dark: #D4AF37;
+            --brown: #8B7355;
+            --brown-light: #A68B6D;
+            --shadow: rgba(74, 155, 142, 0.2);
+            --shadow-hover: rgba(74, 155, 142, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'ZCOOL KuaiLe', 'Ma Shan Zheng', 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+            background-color: var(--cream);
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(74, 155, 142, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(232, 200, 114, 0.05) 0%, transparent 50%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            min-height: 100vh;
+            color: var(--brown);
+        }
+
+        .paper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5'/%3E%3CfeDiffuseLighting in='noise' lighting-color='%23FDF6E3' surfaceScale='2'%3E%3CfeDistantLight azimuth='45' elevation='60'/%3E%3C/feDiffuseLighting%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, var(--teal) 0%, var(--teal-dark) 100%);
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 999;
+            padding: 0 20px;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            color: var(--gold);
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo::before {
+            content: '🌾';
+            font-size: 28px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            color: var(--cream);
+            text-decoration: none;
+            font-size: 18px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links li a::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border: 2px solid rgba(253, 246, 227, 0.3);
+            border-radius: 6px;
+            pointer-events: none;
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            background: rgba(253, 246, 227, 0.15);
+            color: var(--gold);
+        }
+
+        .nav-links li a.active::before {
+            border-color: var(--gold);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 4px;
+            background: var(--cream);
+            margin: 4px 0;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-6px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-6px, -8px);
+        }
+
+        main {
+            padding-top: 80px;
+            min-height: calc(100vh - 140px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            color: var(--teal-dark);
+            margin-bottom: 40px;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .section-title::before,
+        .section-title::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 60px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .section-title::before {
+            left: -80px;
+            transform: translateY(-50%) rotate(-5deg);
+        }
+
+        .section-title::after {
+            right: -80px;
+            transform: translateY(-50%) rotate(5deg);
+        }
+
+        .section-title .decor {
+            margin: 0 10px;
+            color: var(--gold);
+        }
+
+        .card {
+            background: var(--cream);
+            border: 3px solid var(--teal);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 
+                4px 4px 0 var(--teal-dark),
+                inset 0 0 0 2px var(--gold);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 1px dashed rgba(74, 155, 142, 0.3);
+            border-radius: 12px;
+            pointer-events: none;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                6px 6px 0 var(--teal-dark),
+                inset 0 0 0 2px var(--gold);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            color: var(--brown);
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            border: 3px solid var(--brown);
+            box-shadow: 3px 3px 0 var(--brown);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0 var(--brown);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 2px 2px 0 var(--brown);
+        }
+
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 14px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--cream) 0%, var(--cream-dark) 100%);
+            color: var(--teal-dark);
+            border-color: var(--teal);
+            box-shadow: 3px 3px 0 var(--teal-dark);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 5px 5px 0 var(--teal-dark);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #E87272 0%, #D45A5A 100%);
+            color: white;
+            border-color: #8B3535;
+            box-shadow: 3px 3px 0 #8B3535;
+        }
+
+        footer {
+            background: linear-gradient(180deg, var(--teal-dark) 0%, var(--teal) 100%);
+            color: var(--cream);
+            padding: 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .xiaohongshu-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 18px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .xiaohongshu-link:hover {
+            background: rgba(253, 246, 227, 0.15);
+        }
+
+        .xiaohongshu-link::before {
+            content: '📕';
+            font-size: 24px;
+        }
+
+        .home-hero {
+            position: relative;
+            min-height: 100vh;
+            padding: 60px 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-3d-scene {
+            position: relative;
+            width: 400px;
+            height: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .home-center-photo {
+            position: relative;
+            width: 260px;
+            max-width: 40vw;
+            z-index: 5;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .home-center-photo:hover {
+            transform: scale(1.02);
+        }
+
+        .home-center-photo img {
+            width: 300px;
+            height: 500px;
+            display: block;
+        }
+
+        .home-center-photo::after {
+            content: '🍃';
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            font-size: 32px;
+            z-index: 2;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .home-photo-hint {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #8B5A2B;
+            opacity: 0.8;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .home-fan-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .home-fan-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 90px;
+            height: 105px;
+            background: rgba(253, 246, 227, 0.9);
+            border: 3px double #8B5A2B;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0);
+            box-shadow: 
+                3px 3px 10px rgba(0,0,0,0.15),
+                inset 0 2px 0 rgba(255,255,255,0.5);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .home-fan-icon.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .home-fan-icon:hover {
+            border-color: #E8C872;
+            box-shadow: 
+                5px 5px 15px rgba(0,0,0,0.2),
+                0 0 10px rgba(232, 200, 114, 0.5);
+            transform: translate(-50%, -50%) scale(1.12);
+        }
+
+        .home-fan-icon.fan-1 {
+            right: 160px;
+            left: 190px;
+            width: 85px;
+            transform: translate(-50%, -50%) rotate(-135deg) translateX(160px) rotate(135deg) scale(0);
+        }
+        .home-fan-icon.fan-1.active {
+            right: 160px;
+            left: 190px;
+            width: 85px;
+            transform: translate(-50%, -50%) rotate(-135deg) translateX(160px) rotate(135deg) scale(1);
+        }
+
+        .home-fan-icon.fan-2 {
+            margin-left: 40px;
+            top: 240px;
+            width: 85px;
+            transform: translate(-50%, -50%) rotate(-45deg) translateX(160px) rotate(45deg) scale(0);
+        }
+        .home-fan-icon.fan-2.active {
+            margin-left: 40px;
+            top: 240px;
+            width: 85px;
+            transform: translate(-50%, -50%) rotate(-45deg) translateX(160px) rotate(45deg) scale(1);
+        }
+
+        .home-fan-icon.fan-3 {
+            margin-left: 40px;
+            top: 200px;
+            right: 100px;
+            left: 240px;
+            width: 85px;
+            transform: translate(-50%, -50%) rotate(45deg) translateX(160px) rotate(-45deg) scale(0);
+        }
+        .home-fan-icon.fan-3.active {
+            margin-left: 40px;
+            top: 200px;
+            right: 100px;
+            left: 240px;
+            width: 85px;
+            transform: translate(-50%, -50%) rotate(45deg) translateX(160px) rotate(-45deg) scale(1);
+        }
+
+        .home-fan-icon.fan-4 {
+            bottom: 220px;
+            top: 260px;
+            right: 180px;
+            left: 170px;
+            width: 85px;
+            transform: translate(-50%, -50%) rotate(135deg) translateX(160px) rotate(-135deg) scale(0);
+        }
+        .home-fan-icon.fan-4.active {
+            bottom: 220px;
+            top: 260px;
+            right: 180px;
+            left: 170px;
+            width: 85px;
+            transform: translate(-50%, -50%) rotate(135deg) translateX(160px) rotate(-135deg) scale(1);
+        }
+
+        .home-fan-icon .fan-icon-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .home-fan-icon.fan-4 .fan-icon-img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .home-fan-icon.fan-1 .fan-icon-img {
+            height: 50px;
+        }
+
+        .home-fan-icon .fan-icon-text {
+            font-size: 14px;
+            color: #8B5A2B;
+            text-align: center;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .home-fan-icon.fan-1 .fan-icon-text {
+            width: 70px;
+        }
+
+        .home-fireworks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+            overflow: visible;
+        }
+
+        .firework-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0);
+        }
+
+        @keyframes firework-fly {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+            }
+        }
+
+        .home-title {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 42px;
+            color: var(--teal-dark);
+            text-shadow: 3px 3px 0 var(--gold);
+            z-index: 20;
+            white-space: nowrap;
+        }
+
+        .home-title::before,
+        .home-title::after {
+            content: '✨';
+            margin: 0 15px;
+        }
+
+        .home-welcome-bubble {
+            position: absolute;
+            top: 15%;
+            right: 5%;
+            background: rgba(232, 200, 114, 0.9);
+            border: 4px double #8B5A2B;
+            border-radius: 20px;
+            padding: 20px 24px;
+            z-index: 15;
+            max-width: 280px;
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
+            transform: rotate(3deg);
+        }
+
+        .home-welcome-bubble p {
+            font-size: 20px;
+            color: var(--brown);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .home-welcome-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 40px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid #8B5A2B;
+        }
+
+        .home-intro-card {
+            position: absolute;
+            top: 65%;
+            left: 5%;
+            background: rgba(253, 246, 227, 0.9);
+            border: 3px solid #8B5A2B;
+            border-radius: 16px;
+            padding: 20px;
+            z-index: 15;
+            max-width: 260px;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+        }
+
+        .home-intro-card p {
+            font-size: 15px;
+            color: var(--brown);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .home-xiaohongshu {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            z-index: 10;
+        }
+
+        .home-xiaohongshu .xiaohongshu-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(253, 246, 227, 0.8);
+            border: 2px solid #8B5A2B;
+            border-radius: 20px;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #8B5A2B;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .home-xiaohongshu .xiaohongshu-link:hover {
+            background: #FDF6E3;
+            transform: translateY(-2px);
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+        }
+
+        .home-decor {
+            position: absolute;
+            font-size: 24px;
+            z-index: 5;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .home-decor.leaf-1 {
+            top: 20%;
+            left: 8%;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .home-decor.star-1 {
+            top: 30%;
+            right: 5%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        .home-decor.footprint-1 {
+            bottom: 20%;
+            left: 10%;
+            transform: rotate(15deg);
+        }
+
+        .home-decor.cloud-1 {
+            top: 15%;
+            left: 15%;
+            font-size: 32px;
+            opacity: 0.4;
+        }
+
+        .home-menu::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed rgba(74, 155, 142, 0.3);
+            border-radius: 14px;
+            pointer-events: none;
+        }
+
+        .menu-section-title {
+            text-align: center;
+            font-size: 22px;
+            color: var(--teal-dark);
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--gold);
+            display: inline-block;
+            width: 100%;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .menu-card {
+            background: linear-gradient(180deg, #C4A77D 0%, #A68B6D 50%, #8B7355 100%);
+            border: 4px solid #6B5344;
+            border-radius: 12px;
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 
+                5px 5px 0 #5A4335,
+                inset 0 2px 0 rgba(255,255,255,0.2),
+                inset 0 -2px 0 rgba(0,0,0,0.1);
+            min-height: 140px;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 2px solid rgba(232, 200, 114, 0.4);
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        .menu-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+            border-radius: 8px 8px 0 0;
+            pointer-events: none;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 
+                8px 8px 0 #5A4335,
+                inset 0 2px 0 rgba(255,255,255,0.3),
+                inset 0 -2px 0 rgba(0,0,0,0.1);
+        }
+
+        .menu-card:active {
+            transform: translateY(-2px);
+            box-shadow: 
+                4px 4px 0 #5A4335,
+                inset 0 2px 0 rgba(255,255,255,0.2),
+                inset 0 -2px 0 rgba(0,0,0,0.1);
+        }
+
+        .menu-icon {
+            width: 64px;
+            height: 64px;
+            filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.2));
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-icon svg {
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+
+        .menu-card:hover .menu-icon {
+            transform: scale(1.15);
+            filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.25));
+        }
+
+        .menu-text {
+            font-size: 18px;
+            color: #FDF6E3;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .home-xiaohongshu {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .home-xiaohongshu .xiaohongshu-link {
+            font-size: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            color: white;
+            border-radius: 10px;
+            border: 3px solid #CC5555;
+            box-shadow: 4px 4px 0 #993333;
+            transition: all 0.3s ease;
+        }
+
+        .home-xiaohongshu .xiaohongshu-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 6px 6px 0 #993333;
+        }
+
+        .home-intro {
+            font-size: 20px;
+            color: var(--teal-dark);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--gold) 0%, var(--teal) 100%);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-card {
+            margin-right: calc(50% + 30px);
+        }
+
+        .timeline-item:nth-child(even) .timeline-card {
+            margin-left: calc(50% + 30px);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 24px;
+            width: 24px;
+            height: 24px;
+            background: var(--gold);
+            border: 4px solid var(--teal);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            box-shadow: 2px 2px 0 var(--teal-dark);
+        }
+
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: var(--brown);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .timeline-card {
+            width: calc(50% - 50px);
+            background: var(--cream);
+            border: 3px solid var(--teal);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 
+                4px 4px 0 var(--teal-dark),
+                inset 0 0 0 2px var(--gold);
+            position: relative;
+        }
+
+        .timeline-card::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            width: 20px;
+            height: 20px;
+            background: var(--cream);
+            border: 3px solid var(--teal);
+            border-right: none;
+            border-bottom: none;
+            transform: rotate(45deg);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-card::before {
+            right: -13px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-card::before {
+            left: -13px;
+            transform: rotate(-135deg);
+        }
+
+        .timeline-year {
+            font-size: 28px;
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 0 var(--teal-dark);
+        }
+
+        .timeline-title {
+            font-size: 22px;
+            color: var(--teal-dark);
+            margin-bottom: 15px;
+        }
+
+        .timeline-content {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--brown);
+        }
+
+        .timeline-decoration {
+            position: absolute;
+            font-size: 32px;
+            opacity: 0.5;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-decoration {
+            right: -40px;
+            top: 50%;
+        }
+
+        .timeline-item:nth-child(even) .timeline-decoration {
+            left: -40px;
+            top: 50%;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .practice-card {
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            color: var(--teal-dark);
+            flex: 1;
+        }
+
+        .card-date {
+            font-size: 14px;
+            color: var(--brown-light);
+            background: var(--cream-dark);
+            padding: 5px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--gold);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--cream-dark) 0%, var(--cream) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--brown);
+            margin-bottom: 10px;
+        }
+
+        .card-meta {
+            font-size: 14px;
+            color: var(--brown-light);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-meta span {
+            background: rgba(74, 155, 142, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px dashed var(--teal);
+        }
+
+        /* Practice page: turn the long work history into a scannable story. */
+        .practice-intro {
+            max-width: 920px;
+            margin: -12px auto 34px;
+            text-align: center;
+            color: var(--brown);
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .practice-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            max-width: 920px;
+            margin: 0 auto 42px;
+        }
+
+        .practice-summary-item {
+            background: var(--cream-dark);
+            border: 2px solid var(--gold);
+            border-radius: 10px;
+            padding: 16px 14px;
+            text-align: center;
+            box-shadow: 3px 3px 0 rgba(139, 115, 85, 0.25);
+        }
+
+        .practice-summary-value {
+            display: block;
+            color: var(--teal-dark);
+            font-size: 27px;
+            line-height: 1.1;
+            margin-bottom: 6px;
+        }
+
+        .practice-summary-label {
+            display: block;
+            color: var(--brown-light);
+            font-size: 14px;
+        }
+
+        .practice-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .practice-card .card-header {
+            gap: 12px;
+        }
+
+        .practice-card .card-title {
+            line-height: 1.35;
+        }
+
+        .practice-card .card-description {
+            flex: 1;
+        }
+
+        .practice-card .card-image {
+            height: 92px;
+            margin-bottom: 16px;
+            font-size: 42px;
+            background: linear-gradient(135deg, rgba(232, 200, 114, 0.24), rgba(74, 155, 142, 0.12));
+        }
+
+        .practice-card .card-meta {
+            margin-top: 8px;
+        }
+
+        .practice-card .card-meta span:first-child {
+            background: rgba(232, 200, 114, 0.2);
+            border-color: var(--gold-dark);
+        }
+
+        .practice-section-note {
+            max-width: 920px;
+            margin: 34px auto 0;
+            padding: 14px 18px;
+            border-left: 4px solid var(--gold-dark);
+            background: rgba(253, 246, 227, 0.72);
+            color: var(--brown-light);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .portfolio-filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 28px;
+            background: var(--cream);
+            border: 3px solid var(--teal);
+            border-radius: 12px;
+            color: var(--teal-dark);
+            font-size: 18px;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 var(--teal-dark);
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: var(--teal);
+            color: var(--cream);
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0 var(--teal-dark);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .portfolio-card {
+            background: var(--cream);
+            border: 3px solid var(--teal);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 4px 4px 0 var(--teal-dark);
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 6px 6px 0 var(--teal-dark);
+        }
+
+        .portfolio-preview {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, var(--cream-dark) 0%, var(--cream) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-bottom: 2px dashed var(--gold);
+        }
+
+        .portfolio-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .portfolio-ppt-preview {
+            height: 220px;
+            padding: 10px;
+            background: #F5EAD6;
+        }
+
+        .portfolio-ppt-preview img {
+            object-fit: contain;
+            object-position: center;
+            background: var(--cream);
+        }
+
+        .portfolio-video,
+        .portfolio-audio {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .portfolio-video video,
+        .portfolio-audio audio {
+            width: 100%;
+            max-height: 150px;
+        }
+
+        .portfolio-video-preview,
+        .portfolio-drawing-preview {
+            height: 220px;
+            padding: 10px;
+        }
+
+        .portfolio-video-preview {
+            background: #252525;
+        }
+
+        .portfolio-video-preview .portfolio-video {
+            overflow: hidden;
+            border-radius: 6px;
+            background: #111;
+        }
+
+        .portfolio-video-preview .portfolio-video video {
+            width: 100%;
+            height: 100%;
+            max-height: none;
+            object-fit: contain;
+            background: #111;
+        }
+
+        .portfolio-drawing-preview {
+            background: #F5EAD6;
+        }
+
+        .portfolio-cover-link {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: zoom-in;
+        }
+
+        .portfolio-cover-link img,
+        .portfolio-drawing-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            background: var(--cream);
+        }
+
+        .portfolio-content {
+            padding: 20px;
+        }
+
+        .portfolio-title {
+            font-size: 18px;
+            color: var(--teal-dark);
+            margin-bottom: 15px;
+        }
+
+        .portfolio-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .guestbook-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .guestbook-form {
+            background: var(--cream);
+            border: 3px solid var(--teal);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 4px 4px 0 var(--teal-dark);
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 18px;
+            color: var(--teal-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 3px solid var(--gold);
+            border-radius: 10px;
+            background: rgba(253, 246, 227, 0.8);
+            font-family: inherit;
+            font-size: 16px;
+            color: var(--brown);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(74, 155, 142, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .guestbook-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .guestbook-item {
+            background: var(--cream);
+            border: 3px solid var(--gold);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 3px 3px 0 var(--brown);
+            position: relative;
+        }
+
+        .guestbook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .guestbook-nickname {
+            font-size: 20px;
+            color: var(--teal-dark);
+            font-weight: bold;
+        }
+
+        .guestbook-time {
+            font-size: 14px;
+            color: var(--brown-light);
+        }
+
+        .guestbook-content {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--brown);
+            padding: 15px;
+            background: rgba(232, 200, 114, 0.1);
+            border-radius: 10px;
+            border: 1px dashed var(--gold);
+        }
+
+        .guestbook-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--brown-light);
+            font-size: 18px;
+        }
+
+        .empty-state::before {
+            content: '🍂';
+            font-size: 48px;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background: var(--teal-dark);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                gap: 15px;
+                display: none;
+                box-shadow: 0 10px 20px var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .home-title {
+                font-size: 28px;
+                position: static;
+                transform: none;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .home-hero {
+                min-height: auto;
+                padding: 30px 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .home-welcome-bubble {
+                position: static;
+                transform: none;
+                max-width: 100%;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .home-welcome-bubble::after {
+                display: none;
+            }
+
+            .home-intro-card {
+                position: static;
+                transform: none;
+                max-width: 100%;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .home-3d-scene {
+                width: 100% !important;
+                height: auto !important;
+                margin-bottom: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .home-center-photo {
+                position: static !important;
+                transform: none !important;
+                width: 80%;
+                max-width: 280px;
+                margin-bottom: 30px;
+                pointer-events: auto !important;
+            }
+
+            .home-center-photo img {
+                transform: rotate(-1deg);
+            }
+
+            .home-fan-icon {
+                width: 70px;
+                height: 85px;
+            }
+
+            .home-fan-icon .fan-icon-img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .home-fan-icon .fan-icon-text {
+                font-size: 12px;
+            }
+
+            .home-fan-icon.fan-1 {
+                transform: translate(-50%, -50%) rotate(-135deg) translateX(120px) rotate(135deg) scale(0);
+            }
+            .home-fan-icon.fan-1.active {
+                transform: translate(-50%, -50%) rotate(-135deg) translateX(120px) rotate(135deg) scale(1);
+            }
+
+            .home-fan-icon.fan-2 {
+                transform: translate(-50%, -50%) rotate(-45deg) translateX(120px) rotate(45deg) scale(0);
+            }
+            .home-fan-icon.fan-2.active {
+                transform: translate(-50%, -50%) rotate(-45deg) translateX(120px) rotate(45deg) scale(1);
+            }
+
+            .home-fan-icon.fan-3 {
+                transform: translate(-50%, -50%) rotate(45deg) translateX(120px) rotate(-45deg) scale(0);
+            }
+            .home-fan-icon.fan-3.active {
+                transform: translate(-50%, -50%) rotate(45deg) translateX(120px) rotate(-45deg) scale(1);
+            }
+
+            .home-fan-icon.fan-4 {
+                transform: translate(-50%, -50%) rotate(135deg) translateX(120px) rotate(-135deg) scale(0);
+            }
+            .home-fan-icon.fan-4.active {
+                transform: translate(-50%, -50%) rotate(135deg) translateX(120px) rotate(-135deg) scale(1);
+            }
+
+            .home-xiaohongshu {
+                position: static;
+                margin-bottom: 20px;
+            }
+
+            .home-decor {
+                display: none;
+            }
+
+            .home-menu {
+                padding: 20px;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .menu-card {
+                min-height: 120px;
+                padding: 20px 10px;
+            }
+
+            .menu-icon {
+                font-size: 40px;
+            }
+
+            .menu-text {
+                font-size: 16px;
+            }
+
+            .timeline::before {
+                left: 30px;
+            }
+
+            .timeline-dot {
+                left: 30px;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-card,
+            .timeline-item:nth-child(even) .timeline-card {
+                margin-left: 60px;
+                margin-right: 0;
+                width: calc(100% - 80px);
+            }
+
+            .timeline-item:nth-child(odd) .timeline-card::before,
+            .timeline-item:nth-child(even) .timeline-card::before {
+                left: -13px;
+                transform: rotate(-135deg);
+            }
+
+            .timeline-decoration {
+                display: none;
+            }
+
+            .practice-intro {
+                font-size: 16px;
+                text-align: left;
+                margin-bottom: 26px;
+            }
+
+            .practice-summary {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                margin-bottom: 30px;
+            }
+
+            .practice-summary-item {
+                padding: 13px 8px;
+            }
+
+            .practice-summary-value {
+                font-size: 23px;
+            }
+
+            .practice-summary-label {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+
+            .practice-card .card-date {
+                white-space: nowrap;
+                padding-left: 8px;
+                padding-right: 8px;
+                font-size: 12px;
+            }
+
+            .practice-section-note {
+                margin-top: 28px;
+                font-size: 13px;
+            }
+
+            .section-title::before,
+            .section-title::after {
+                display: none;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .home-photo {
+                width: 150px;
+                height: 150px;
+            }
+
+            .home-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .home-title {
+                font-size: 26px;
+            }
+
+            .home-subtitle {
+                font-size: 14px;
+            }
+
+            .home-welcome {
+                font-size: 16px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .menu-card {
+                min-height: 100px;
+                padding: 15px 10px;
+            }
+
+            .menu-icon {
+                font-size: 36px;
+            }
+
+            .menu-text {
+                font-size: 15px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .practice-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .practice-summary-item {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 8px;
+                padding: 11px 12px;
+            }
+
+            .practice-summary-value {
+                margin-bottom: 0;
+            }
+
+            .practice-card .card-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .practice-card .card-date {
+                align-self: flex-start;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-btn {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+        }
+
+        .decor-element {
+            position: fixed;
+            font-size: 24px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 998;
+        }
+
+        .star-1 { top: 10%; left: 5%; animation: twinkle 3s infinite; }
+        .star-2 { top: 20%; right: 10%; animation: twinkle 4s infinite 0.5s; }
+        .star-3 { top: 60%; left: 8%; animation: twinkle 3.5s infinite 1s; }
+        .star-4 { top: 80%; right: 5%; animation: twinkle 4.5s infinite 0.3s; }
+        .leaf-1 { top: 30%; right: 15%; transform: rotate(15deg); }
+        .leaf-2 { top: 70%; left: 12%; transform: rotate(-20deg); }
+        .footprint-1 { bottom: 20%; right: 20%; }
+        .footprint-2 { bottom: 30%; left: 18%; }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* ============================================================ */
+        /* 开场动画：纸飞机从左上角飞向右下角，由小变大 */
+        /* ============================================================ */
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: linear-gradient(180deg, #B5E6FF 0%, #6EC6FF 50%, #4A90D9 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: opacity 0.6s ease-out;
+        }
+
+        .splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .splash-skip {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 20px;
+            color: #FFF;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10000;
+        }
+
+        .splash-skip:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        /* ===== 飞行动画 ===== */
+        .fly-plane,
+        .fly-plane-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            display: block;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .fly-plane {
+            visibility: hidden;
+            mix-blend-mode: screen;
+        }
+
+        .fly-plane-canvas {
+            background: transparent;
+        }
+
+        .splash-video-watermark-cover {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 34%;
+            height: 24%;
+            z-index: 25;
+            background: linear-gradient(180deg, #5AADEA 0%, #4A90D9 100%);
+            pointer-events: none;
+        }
+
+        .splash-character {
+            position: relative;
+            z-index: 40;
+            transform: translateY(-100vh);
+            animation: 
+                characterDrop 1.05s cubic-bezier(0.16, 0.9, 0.3, 1) 0.2s forwards,
+                characterExit 0.55s cubic-bezier(0.62, 0, 0.35, 1) 2.7s forwards;
+        }
+
+        .splash-character img {
+            max-width: 80%;
+            height: auto;
+            border: 4px solid #8B5A2B;
+            border-radius: 16px;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.3),
+                0 0 0 4px rgba(255,255,255,0.5);
+            image-rendering: pixelated;
+        }
+
+        .splash-title {
+            position: relative;
+            z-index: 40;
+            margin-top: 20px;
+            font-size: 28px;
+            color: #E8C872;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+            opacity: 0;
+            animation: 
+                fadeIn 0.35s ease-out 1.05s forwards,
+                titleExit 0.45s ease-in 2.75s forwards;
+        }
+
+        @keyframes characterDrop {
+            to { transform: translateY(0); }
+        }
+
+        @keyframes characterExit {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+                filter: blur(0);
+            }
+            100% {
+                transform: translateY(-46px) scale(0.96);
+                opacity: 0;
+                filter: blur(10px);
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes titleExit {
+            to {
+                opacity: 0;
+                filter: blur(6px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .splash-character img {
+                max-width: 90%;
+            }
+            
+            .splash-title {
+                font-size: 22px;
+            }
+            
+            .splash-skip {
+                font-size: 14px;
+                padding: 6px 12px;
+                top: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="paper-texture"></div>
+    
+    <!-- ===== 开场动画 ===== -->
+    <div class="splash-screen" id="splashScreen">
+        <div class="splash-skip" onclick="skipSplash()">跳过 →</div>
+        
+        <!-- 飞行动画视频：隐藏原视频，用透明画布去黑底后显示 -->
+        <video class="fly-plane" id="flyPlane" autoplay muted playsinline loop preload="auto" aria-label="纸飞机飞行开场动画">
+            <source src="asset/flying.mp4" type="video/mp4">
+        </video>
+        <canvas class="fly-plane-canvas" id="flyPlaneCanvas" aria-hidden="true"></canvas>
+        <div class="splash-video-watermark-cover" aria-hidden="true"></div>
+        
+        <!-- 角色卡 -->
+        <div class="splash-character">
+            <img src="images/board.png" alt="CAN的小镇名片">
+        </div>
+        <div class="splash-title">✨ 欢迎翻阅CAN的札记 ✨</div>
+    </div>
+    
+    <div class="decor-element star-1">✨</div>
+    <div class="decor-element star-2">⭐</div>
+    <div class="decor-element star-3">🌟</div>
+    <div class="decor-element star-4">✨</div>
+    <div class="decor-element leaf-1">🍃</div>
+    <div class="decor-element leaf-2">🍀</div>
+    <div class="decor-element footprint-1">👣</div>
+    <div class="decor-element footprint-2">🐾</div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="nav-logo" onclick="navigateTo('home')">CAN的星露谷札记</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="active" onclick="navigateTo('home')">首页</a></li>
+                <li><a href="#life" onclick="navigateTo('life')">我的生活小览</a></li>
+                <li><a href="#practice" onclick="navigateTo('practice')">实践与学工</a></li>
+                <li><a href="#portfolio" onclick="navigateTo('portfolio')">作品集</a></li>
+                <li><a href="#guestbook" onclick="navigateTo('guestbook')">留言板</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="home-hero">
+                <h1 class="home-title">CAN的星露谷札记</h1>
+                
+                <div class="home-welcome-bubble">
+                    <p>真不错！该学习了！人生从此将展开新的一页，但前途必定是光明的！</p>
+                </div>
+
+                <div class="home-intro-card">
+                    <p>大家好，我是曹安妮（CAN），非常感谢你来到我的成长小镇。在这里，你可以看到我的点点滴滴——从初入校园的懵懂，到逐渐成长的蜕变。每一段经历都是我人生中宝贵的财富，希望能与你分享这份温暖与感动。</p>
+                </div>
+
+                <div class="home-3d-scene" id="homeScene">
+                    <div class="home-center-photo" onclick="toggleFanIcons()">
+                        <img src="images/myphoto.png" alt="曹安妮">
+                    </div>
+                    <div class="home-photo-hint">✨ 点击图片，探索更多 ✨</div>
+                    
+                    <div class="home-fan-icons" id="fanIcons">
+                        <div class="home-fan-icon fan-1" onclick="handleFanClick('life')">
+                            <img src="images/icon-life.png" alt="我的生活小览" class="fan-icon-img">
+                            <div class="fan-icon-text">我的生活小览</div>
+                        </div>
+                        <div class="home-fan-icon fan-2" onclick="handleFanClick('practice')">
+                            <img src="images/icon-practice.png" alt="实践与学工" class="fan-icon-img">
+                            <div class="fan-icon-text">实践与学工</div>
+                        </div>
+                        <div class="home-fan-icon fan-3" onclick="handleFanClick('portfolio')">
+                            <img src="images/icon-portfolio.png" alt="作品集" class="fan-icon-img">
+                            <div class="fan-icon-text">作品集</div>
+                        </div>
+                    </div>
+                    
+                    <div class="home-fireworks" id="fireworks"></div>
+                </div>
+
+                <div class="home-xiaohongshu">
+                    <a href="https://www.xiaohongshu.com/" class="xiaohongshu-link" target="_blank">📕 小红书</a>
+                </div>
+
+                <div class="home-decor leaf-1">🍃</div>
+                <div class="home-decor star-1">⭐</div>
+                <div class="home-decor footprint-1">👣</div>
+                <div class="home-decor cloud-1">☁️</div>
+            </div>
+        </div>
+
+        <!-- 我的生活小览 -->
+        <div id="page-life" class="page">
+            <h2 class="section-title">🌿 <span class="decor">✦</span> 我的生活小览 <span class="decor">✦</span> 🌿</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-year">大一 · 启程</div>
+                        <div class="timeline-title">初入校园的憧憬与探索</div>
+                        <div class="timeline-content">刚踏入大学校园，一切都是那么新鲜和美好。参加了各种社团活动，认识了很多志同道合的朋友。在专业课学习中打下了坚实的基础，同时也开始思考未来的方向。那时候的我，对未来充满了无限的憧憬和期待。</div>
+                    </div>
+                    <div class="timeline-decoration">🌱</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-year">大二 · 成长</div>
+                        <div class="timeline-title">在实践中收获与成长</div>
+                        <div class="timeline-content">这一年，我开始参与各种学术竞赛和科研项目。从最初的迷茫不知所措，到后来能够独当一面，这个过程充满了挑战但也收获满满。同时，我也在学生工作中锻炼了自己的组织能力和团队协作能力。</div>
+                    </div>
+                    <div class="timeline-decoration">🌿</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-year">大三 · 定向</div>
+                        <div class="timeline-title">在实践中找到方向</div>
+                        <div class="timeline-content">大三，我开始在学生工作与社会实践中承担更多统筹责任：参与乡村共富调研、雨花英烈精神宣讲和研学课程制作，把课堂所学转化为面向真实问题的调研与行动；在易班学生发展中心、青马工程等组织工作中，我进一步锻炼了协调、策划与表达能力，也逐渐明确了继续深造、用马克思主义理论回应现实问题的方向。</div>
+                    </div>
+                    <div class="timeline-decoration">🌳</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <div class="timeline-year">大四 · 收获</div>
+                        <div class="timeline-title">回望过去，展望未来</div>
+                        <div class="timeline-content">转眼间，大学时光即将画上句号。这一年，我完成了毕业论文，拿到了心仪高校的研究生录取通知书。回顾这四年的点点滴滴，虽然有过迷茫和挫折，但更多的是成长和收获。感谢一路上陪伴我的老师和朋友们！</div>
+                    </div>
+                    <div class="timeline-decoration">🌾</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 实践与学工 -->
+        <div id="page-practice" class="page">
+            <h2 class="section-title">💼 <span class="decor">✦</span> 实践与学工 <span class="decor">✦</span> 💼</h2>
+            <p class="practice-intro">从校园组织到基层实践，我持续把“组织、表达与服务”落到具体行动中。以下经历按实践脉络梳理，记录我在学生工作、宣传实践与社会服务中的角色变化。</p>
+            <div class="practice-summary" aria-label="实践与学工概览">
+                <div class="practice-summary-item">
+                    <span class="practice-summary-value">4年</span>
+                    <span class="practice-summary-label">学生工作与服务经验</span>
+                </div>
+                <div class="practice-summary-item">
+                    <span class="practice-summary-value">12段</span>
+                    <span class="practice-summary-label">校园与社会实践经历</span>
+                </div>
+                <div class="practice-summary-item">
+                    <span class="practice-summary-value">3类</span>
+                    <span class="practice-summary-label">组织统筹 · 宣传创作 · 思政实践</span>
+                </div>
+            </div>
+            <div class="card-grid">
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">易班学生发展中心 · 联络部部长</h3>
+                        <span class="card-date">2023.09—2024.06</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">🤝</div>
+                    <div class="card-description">统筹校院两级易班工作联动，策划并执行校级大型学生活动；承担活动组织协调、现场答疑与跨校骨干交流培训对接。</div>
+                    <div class="card-meta">
+                        <span>组织统筹</span>
+                        <span>南京师范大学</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">第十六期“青马工程”培训班 · 分管组长</h3>
+                        <span class="card-date">2024.06—2025.07</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">📖</div>
+                    <div class="card-description">负责小组学员管理、任务分工与进度跟进，策划并主持圆桌会议等理论学习研讨，参与微课录制与企业党建专项调研。</div>
+                    <div class="card-meta">
+                        <span>理论学习</span>
+                        <span>南京师范大学</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">易班学生发展中心 · 主席</h3>
+                        <span class="card-date">2024.07—2025.07</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">🌐</div>
+                    <div class="card-description">分管办公室和内容部，负责工作站日常运行、场地设备与值班调度；策划校级品牌活动，接待高校调研队伍，牵头完善工作流程与制度手册。</div>
+                    <div class="card-meta">
+                        <span>学生组织管理</span>
+                        <span>省外交流</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">马克思主义理论专业班级 · 团支书</h3>
+                        <span class="card-date">2024.07—2026.07</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">🌱</div>
+                    <div class="card-description">主持团支部日常工作，组织理论学习与主题团日，做好团员管理服务和思想引领；撰写申报材料，统筹支部获评校“五四红旗团支部”。</div>
+                    <div class="card-meta">
+                        <span>团支部建设</span>
+                        <span>思想引领</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">马克思主义学院党建工作中心 · 教育培训部主任</h3>
+                        <span class="card-date">2025.06—2026.06</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">🗂️</div>
+                    <div class="card-description">配合学院党委开展各级党校培训与课程管理，组织入党申请书征集审核，规范党员发展流程，统筹推优入党及档案材料归档。</div>
+                    <div class="card-meta">
+                        <span>党建工作</span>
+                        <span>教育培训</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">南京师范大学学生工作处 · 思政助理</h3>
+                        <span class="card-date">2025.09—2026.07</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">🧭</div>
+                    <div class="card-description">协助完成易班课题结项项目书撰写，参与网络文化艺术节、十佳班级评选及培训班筹办，并承担思想教育科财务报送等基础事务。</div>
+                    <div class="card-meta">
+                        <span>思政教育</span>
+                        <span>活动保障</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">大丰区妇女联合会 · 宣传部实习生</h3>
+                        <span class="card-date">2024.07—2024.08</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">📰</div>
+                    <div class="card-description">撰写新闻稿，编辑并运营微信公众号，参与“盐家优教”家庭教育活动与书香文化月等线下活动的组织开展。</div>
+                    <div class="card-meta">
+                        <span>宣传实践</span>
+                        <span>盐城 · 大丰</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">兰考县谷营镇齐场小学 · 支教教师</h3>
+                        <span class="card-date">2024.08—2024.09</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">📚</div>
+                    <div class="card-description">讲授“雨花英烈精神”主题思政课，参与活动课与户外体育教学；独立完成5期夏令营纪录片摄制剪辑，并设计发放学生调研问卷。</div>
+                    <div class="card-meta">
+                        <span>支教实践</span>
+                        <span>红色教育</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">2203班公众号“贰贰叁号航行日志” · 编辑</h3>
+                        <span class="card-date">2022.09—2026.07</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">✍️</div>
+                    <div class="card-description">负责研学、心理班会与主题团课的影像记录，撰写推送、制作首图和展演物料，参与校十佳班级申报与材料排版。</div>
+                    <div class="card-meta">
+                        <span>新媒体运营</span>
+                        <span>视觉设计</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">盐城市大丰籍大学生驻外团工委 · 组织部部长</h3>
+                        <span class="card-date">2026.08—至今</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">🚩</div>
+                    <div class="card-description">协助统筹团务工作，负责团员联络管理与主题团日策划；牵头返乡大学生思想调研和青年交流活动，做好人员协调、资料整理与活动纪实。</div>
+                    <div class="card-meta">
+                        <span>现任</span>
+                        <span>青年工作</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">暑期社会实践 · 乡村共富调研</h3>
+                        <span class="card-date">2023.07—2023.08</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">🌾</div>
+                    <div class="card-description">主持团队走访盐城、南京、苏州、泰州、宿迁等地13处乡村，调研乡村积分治理、数字农业与省级特色田园乡村发展经验，获优秀团队一等奖、优秀调研报告二等奖。</div>
+                    <div class="card-meta">
+                        <span>社会调研</span>
+                        <span>乡村振兴</span>
+                    </div>
+                </div>
+
+                <div class="card practice-card">
+                    <div class="card-header">
+                        <h3 class="card-title">寒假社会实践 · 数智红色文化资源调查</h3>
+                        <span class="card-date">2025.01—2025.02</span>
+                    </div>
+                    <div class="card-image" aria-hidden="true">🏛️</div>
+                    <div class="card-description">主持全国“数智时代红色文化资源”调查，走访南京梅园新村等10余所红色场馆，开展资源记录与传播路径调研，获返家乡社会实践专项二等奖。</div>
+                    <div class="card-meta">
+                        <span>红色文化</span>
+                        <span>调研实践</span>
+                    </div>
+                </div>
+            </div>
+            <p class="practice-section-note">工作经历中的时间与职务均依据《武汉大学研究生会未来学院秋季招新报名表》整理；相关实践成果已在本页对应经历中一并呈现。</p>
+        </div>
+
+        <!-- 作品集 -->
+        <div id="page-portfolio" class="page">
+            <h2 class="section-title">🎨 <span class="decor">✦</span> 作品集 <span class="decor">✦</span> 🎨</h2>
+            <div class="portfolio-filters">
+                <button class="filter-btn active" data-filter="ppt" onclick="filterPortfolio('ppt')">📊 PPT作品</button>
+                <button class="filter-btn" data-filter="visual" onclick="filterPortfolio('visual')">📈 可视化作品</button>
+                <button class="filter-btn" data-filter="video" onclick="filterPortfolio('video')">🎬 视频作品</button>
+                <button class="filter-btn" data-filter="drawing" onclick="filterPortfolio('drawing')">📚 绘本作品</button>
+                <button class="filter-btn" data-filter="audio" onclick="filterPortfolio('audio')">🎵 音频作品</button>
+            </div>
+            <div class="portfolio-grid" id="portfolioGrid">
+                <!-- PPT作品 -->
+                <div class="portfolio-card" data-category="ppt">
+                    <div class="portfolio-preview portfolio-ppt-preview">
+                        <img src="asset/ppt/ppt1.png" alt="PPT 1 大创项目汇报">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">PPT 1 · 大创项目汇报</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/ppt/ppt1.png" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt1.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="ppt">
+                    <div class="portfolio-preview portfolio-ppt-preview">
+                        <img src="asset/ppt/ppt2.png" alt="PPT 2 大挑学术汇报">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">PPT 2 · 大挑学术汇报</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/ppt/ppt2.png" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt2.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="ppt">
+                    <div class="portfolio-preview portfolio-ppt-preview">
+                        <img src="asset/ppt/ppt3.png" alt="PPT 3 小挑商业汇报">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">PPT 3 · 小挑商业汇报</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/ppt/ppt3.png" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt3.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="ppt">
+                    <div class="portfolio-preview portfolio-ppt-preview">
+                        <img src="asset/ppt/ppt4.png" alt="PPT 4 学术交流汇报">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">PPT 4 · 学术交流汇报 1</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/ppt/ppt4.png" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt4.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="ppt">
+                    <div class="portfolio-preview portfolio-ppt-preview">
+                        <img src="asset/ppt/ppt5.png" alt="PPT 5 学术交流汇报">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">PPT 5 · 学术交流汇报 2</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/ppt/ppt5.png" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt5.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="ppt">
+                    <div class="portfolio-preview portfolio-ppt-preview">
+                        <img src="asset/ppt/ppt6.png" alt="PPT 6 学术交流汇报">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">PPT 6 · 学术交流汇报 3</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/ppt/ppt6.png" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt6.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 可视化作品 -->
+                <div class="portfolio-card" data-category="visual">
+                    <div class="portfolio-preview">
+                        <img src="asset/visual/vis1.jpg" alt="信息可视化作品01">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">信息可视化作品01</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/visual/vis1.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="visual">
+                    <div class="portfolio-preview">
+                        <img src="asset/visual/vis2.jpg" alt="信息可视化作品02">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">信息可视化作品02</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/visual/vis2.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="visual">
+                    <div class="portfolio-preview">
+                        <img src="asset/visual/vis3.jpg" alt="信息可视化作品03">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">信息可视化作品03</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/visual/vis3.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="visual">
+                    <div class="portfolio-preview">
+                        <img src="asset/visual/vis4.jpg" alt="信息可视化作品04">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">信息可视化作品04</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/visual/vis4.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="visual">
+                    <div class="portfolio-preview">
+                        <img src="asset/visual/vis5.jpg" alt="信息可视化作品05">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">信息可视化作品05</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/visual/vis5.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="visual">
+                    <div class="portfolio-preview">
+                        <img src="asset/visual/vis6.jpg" alt="信息可视化作品06">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">信息可视化作品06</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/visual/vis6.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="visual">
+                    <div class="portfolio-preview">
+                        <img src="asset/visual/vis7.jpg" alt="信息可视化作品07">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">信息可视化作品07</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/visual/vis7.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 视频作品 -->
+                <div class="portfolio-card" data-category="video">
+                    <div class="portfolio-preview portfolio-video-preview">
+                        <div class="portfolio-video">
+                            <video controls playsinline preload="metadata" poster="asset/video/video1%20show.png">
+                                <source src="asset/video/video1.mp4" type="video/mp4">
+                                您的浏览器不支持视频播放
+                            </video>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">作品视频1</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/video/video1.mp4" download class="btn btn-sm">下载视频</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="video">
+                    <div class="portfolio-preview portfolio-video-preview">
+                        <div class="portfolio-video">
+                            <video controls playsinline preload="metadata" poster="asset/video/video2%20show.png">
+                                <source src="asset/video/video2.mp4" type="video/mp4">
+                                您的浏览器不支持视频播放
+                            </video>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">作品视频2</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/video/video2.mp4" download class="btn btn-sm">下载视频</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="video">
+                    <div class="portfolio-preview portfolio-video-preview">
+                        <div class="portfolio-video">
+                            <video controls playsinline preload="metadata" poster="asset/video/video3%20show.png">
+                                <source src="asset/video/video3.mp4" type="video/mp4">
+                                您的浏览器不支持视频播放
+                            </video>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">作品视频3</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/video/video3.mp4" download class="btn btn-sm">下载视频</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 绘本作品 -->
+                <div class="portfolio-card" data-category="drawing">
+                    <div class="portfolio-preview portfolio-drawing-preview">
+                        <a href="asset/drawing/drawing1.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本作品1">
+                            <img src="asset/drawing/drawing1%20show.png" alt="绘本作品1展示图">
+                        </a>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">绘本作品 1</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/drawing/drawing1.pdf" target="_blank" rel="noopener" class="btn btn-sm">查看完整绘本</a>
+                            <a href="asset/drawing/drawing1.pdf" download class="btn btn-sm btn-secondary">下载 PDF</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="drawing">
+                    <div class="portfolio-preview portfolio-drawing-preview">
+                        <a href="asset/drawing/drawing2.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本作品2">
+                            <img src="asset/drawing/drawing2%20show.png" alt="绘本作品2展示图">
+                        </a>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">绘本作品 2</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/drawing/drawing2.pdf" target="_blank" rel="noopener" class="btn btn-sm">查看完整绘本</a>
+                            <a href="asset/drawing/drawing2.pdf" download class="btn btn-sm btn-secondary">下载 PDF</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="drawing">
+                    <div class="portfolio-preview portfolio-drawing-preview">
+                        <a href="asset/drawing/drawing3.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本作品3">
+                            <img src="asset/drawing/drawing3%20show.png" alt="绘本作品3展示图">
+                        </a>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">绘本作品 3</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/drawing/drawing3.pdf" target="_blank" rel="noopener" class="btn btn-sm">查看完整绘本</a>
+                            <a href="asset/drawing/drawing3.pdf" download class="btn btn-sm btn-secondary">下载 PDF</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 音频作品 -->
+                <div class="portfolio-card" data-category="audio">
+                    <div class="portfolio-preview">
+                        <div class="portfolio-audio">
+                            <audio controls>
+                                <source src="asset/audio/audio1.MP3" type="audio/mpeg">
+                                您的浏览器不支持音频播放
+                            </audio>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">音频作品1</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/audio/audio1.MP3" download class="btn btn-sm">下载音频</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-card" data-category="audio">
+                    <div class="portfolio-preview">
+                        <div class="portfolio-audio">
+                            <audio controls>
+                                <source src="asset/audio/audio2.MP3" type="audio/mpeg">
+                                您的浏览器不支持音频播放
+                            </audio>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">音频作品2</h3>
+                        <div class="portfolio-actions">
+                            <a href="asset/audio/audio2.MP3" download class="btn btn-sm">下载音频</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 留言板 -->
+        <div id="page-guestbook" class="page">
+            <h2 class="section-title">📝 <span class="decor">✦</span> 留言板 <span class="decor">✦</span> 📝</h2>
+            <div class="guestbook-container">
+                <div class="guestbook-form">
+                    <div class="form-group">
+                        <label class="form-label">昵称 *</label>
+                        <input type="text" id="nickname" class="form-input" placeholder="请输入您的昵称">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">邮箱（选填）</label>
+                        <input type="email" id="email" class="form-input" placeholder="请输入您的邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">留言内容 *</label>
+                        <textarea id="content" class="form-textarea" placeholder="写下您想说的话..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn" onclick="submitGuestbook()">提交留言</button>
+                    </div>
+                </div>
+
+                <div class="guestbook-list" id="guestbookList">
+                    <div class="empty-state">还没有留言呢，快来留下第一条吧~</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <span>© 2024 CAN的星露谷小札 | 温暖治愈的成长记录</span>
+            <a href="https://www.xiaohongshu.com/" class="xiaohongshu-link" target="_blank">小红书</a>
+        </div>
+    </footer>
+
+    <script>
+        // ===== 跳过开场动画 =====
+        function skipSplash() {
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.classList.add('hidden');
+            }
+        }
+
+        // 开场动画约 4 秒后淡出
+        document.addEventListener('DOMContentLoaded', function() {
+            initTransparentFlyingVideo();
+
+            setTimeout(function() {
+                skipSplash();
+            }, 3400);
+        });
+
+        function initTransparentFlyingVideo() {
+            const video = document.getElementById('flyPlane');
+            const canvas = document.getElementById('flyPlaneCanvas');
+            const watermarkCover = document.querySelector('.splash-video-watermark-cover');
+            if (!video || !canvas) return;
+
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            if (!ctx) return;
+
+            function syncCanvasSize() {
+                const width = video.videoWidth || 720;
+                const height = video.videoHeight || 720;
+                if (canvas.width !== width || canvas.height !== height) {
+                    canvas.width = width;
+                    canvas.height = height;
+                }
+            }
+
+            function renderFrame() {
+                if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+                    syncCanvasSize();
+                    try {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                        const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const data = frame.data;
+                        const watermarkLeft = Math.floor(canvas.width * 0.70);
+                        const watermarkTop = Math.floor(canvas.height * 0.78);
+
+                        for (let i = 0; i < data.length; i += 4) {
+                            const pixelIndex = i / 4;
+                            const x = pixelIndex % canvas.width;
+                            const y = Math.floor(pixelIndex / canvas.width);
+                            const red = data[i];
+                            const green = data[i + 1];
+                            const blue = data[i + 2];
+                            const brightness = Math.max(red, green, blue);
+                            const colorSpread = Math.max(red, green, blue) - Math.min(red, green, blue);
+                            const inWatermarkArea = x > watermarkLeft && y > watermarkTop;
+
+                            if (inWatermarkArea || (brightness < 52 && colorSpread < 34)) {
+                                data[i + 3] = 0;
+                            } else if (brightness < 92 && colorSpread < 42) {
+                                data[i + 3] = Math.min(data[i + 3], Math.round((brightness - 52) * 6));
+                            }
+                        }
+
+                        ctx.putImageData(frame, 0, 0);
+                        if (watermarkCover) {
+                            watermarkCover.style.display = 'none';
+                        }
+                    } catch (error) {
+                        video.style.visibility = 'visible';
+                        canvas.style.display = 'none';
+                        if (watermarkCover) {
+                            watermarkCover.style.display = 'block';
+                        }
+                        return;
+                    }
+                }
+
+                requestAnimationFrame(renderFrame);
+            }
+
+            video.playbackRate = 0.80;
+            video.addEventListener('loadedmetadata', syncCanvasSize, { once: true });
+            video.play().catch(() => {});
+            renderFrame();
+        }
+
+        // ===== 页面导航 =====
+        function navigateTo(pageId) {
+            let targetPage = document.getElementById(`page-${pageId}`);
+            if (!targetPage) {
+                pageId = 'home';
+                targetPage = document.getElementById('page-home');
+            }
+
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            targetPage.classList.add('active');
+
+            document.querySelectorAll('.nav-links li a').forEach(link => {
+                link.classList.remove('active');
+            });
+            const activeLink = document.querySelector(`.nav-links li a[href="#${pageId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            window.location.hash = pageId;
+
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('navLinks');
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== 扇形图标控制 =====
+        let fanIconsOpen = false;
+
+        function toggleFanIcons() {
+            const icons = document.querySelectorAll('.home-fan-icon');
+            
+            if (!fanIconsOpen) {
+                icons.forEach((icon, index) => {
+                    setTimeout(() => {
+                        icon.classList.add('active');
+                    }, index * 60);
+                });
+                createFireworks();
+                fanIconsOpen = true;
+            } else {
+                icons.forEach((icon, index) => {
+                    setTimeout(() => {
+                        icon.classList.remove('active');
+                    }, index * 40);
+                });
+                fanIconsOpen = false;
+            }
+        }
+
+        function handleFanClick(pageId) {
+            closeFanIcons();
+            setTimeout(() => {
+                navigateTo(pageId);
+            }, 300);
+        }
+
+        function closeFanIcons() {
+            const icons = document.querySelectorAll('.home-fan-icon');
+            icons.forEach((icon, index) => {
+                setTimeout(() => {
+                    icon.classList.remove('active');
+                }, index * 40);
+            });
+            fanIconsOpen = false;
+        }
+
+        // ===== 烟花效果 =====
+        function createFireworks() {
+            const container = document.getElementById('fireworks');
+            container.innerHTML = '';
+            
+            const colors = ['#E8C872', '#FDF6E3', '#A8D5D0', '#FFD700', '#FFFACD'];
+            const particleCount = 25;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework-particle';
+                
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.backgroundColor = color;
+                
+                const size = Math.random() * 8 + 4;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                const angle = (Math.random() * 180 - 90) * (Math.PI / 180);
+                const distance = Math.random() * 150 + 80;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance - 30;
+                
+                particle.style.left = '50%';
+                particle.style.top = '40%';
+                
+                particle.style.setProperty('--tx', x + 'px');
+                particle.style.setProperty('--ty', y + 'px');
+                
+                const duration = Math.random() * 0.5 + 0.8;
+                particle.style.animation = `firework-fly ${duration}s ease-out forwards`;
+                
+                container.appendChild(particle);
+            }
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 1500);
+        }
+
+        // ===== 汉堡菜单 =====
+        function toggleMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('navLinks');
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        }
+
+        // ===== 路由 =====
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.slice(1);
+            if (hash) {
+                navigateTo(hash);
+            } else {
+                navigateTo('home');
+            }
+        });
+
+        // ===== 作品集筛选 =====
+        function filterPortfolio(category) {
+            const btn = event.target;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.portfolio-card');
+            cards.forEach(card => {
+                if (card.dataset.category === category) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeIn 0.3s ease';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // ===== 留言板 =====
+        function loadGuestbook() {
+            const guestbookData = localStorage.getItem('can_guestbook');
+            const guestbookList = document.getElementById('guestbookList');
+            
+            if (!guestbookData || JSON.parse(guestbookData).length === 0) {
+                guestbookList.innerHTML = '<div class="empty-state">还没有留言呢，快来留下第一条吧~</div>';
+                return;
+            }
+
+            const entries = JSON.parse(guestbookData).sort((a, b) => b.timestamp - a.timestamp);
+            
+            let html = '';
+            entries.forEach(entry => {
+                const date = new Date(entry.timestamp);
+                const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+                html += `
+                    <div class="guestbook-item">
+                        <div class="guestbook-header">
+                            <span class="guestbook-nickname">${entry.nickname}</span>
+                            <span class="guestbook-time">${dateStr}</span>
+                        </div>
+                        <div class="guestbook-content">${entry.content}</div>
+                        <div class="guestbook-actions">
+                            <button class="btn btn-sm btn-danger" onclick="deleteGuestbook('${entry.id}')">删除留言</button>
+                        </div>
+                    </div>
+                `;
+            });
+            guestbookList.innerHTML = html;
+        }
+
+        function submitGuestbook() {
+            const nickname = document.getElementById('nickname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const content = document.getElementById('content').value.trim();
+
+            if (!nickname) {
+                alert('请输入昵称！');
+                return;
+            }
+            if (!content) {
+                alert('请输入留言内容！');
+                return;
+            }
+
+            const entry = {
+                id: Date.now().toString(),
+                nickname: nickname,
+                email: email,
+                content: content,
+                timestamp: Date.now()
+            };
+
+            const guestbookData = localStorage.getItem('can_guestbook');
+            const entries = guestbookData ? JSON.parse(guestbookData) : [];
+            entries.push(entry);
+            localStorage.setItem('can_guestbook', JSON.stringify(entries));
+
+            document.getElementById('nickname').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('content').value = '';
+
+            loadGuestbook();
+        }
+
+        function deleteGuestbook(id) {
+            if (confirm('确定要删除这条留言吗？')) {
+                const guestbookData = localStorage.getItem('can_guestbook');
+                let entries = guestbookData ? JSON.parse(guestbookData) : [];
+                entries = entries.filter(entry => entry.id !== id);
+                localStorage.setItem('can_guestbook', JSON.stringify(entries));
+                loadGuestbook();
+            }
+        }
+
+        // ===== 页面加载初始化 =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.slice(1);
+            if (hash) {
+                navigateTo(hash);
+            } else {
+                navigateTo('home');
+            }
+            loadGuestbook();
+        });
+    </script>
+</body>
+</html>
