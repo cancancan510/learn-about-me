@@ -967,6 +967,365 @@
             top: 50%;
         }
 
+        /* 技能卡片区 */
+        .skills-page-intro {
+            max-width: 760px;
+            margin: 0 auto 18px;
+            color: var(--brown);
+            font-size: 17px;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .skills-board {
+            position: relative;
+            isolation: isolate;
+            width: min(100%, 980px);
+            min-height: 720px;
+            margin: 0 auto;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(232, 244, 207, 0.84), rgba(253, 246, 227, 0.9));
+            border: 3px solid #7f9d58;
+            border-radius: 20px;
+            box-shadow: 8px 8px 0 rgba(74, 99, 48, 0.24), inset 0 0 0 3px rgba(255,255,255,0.54);
+        }
+
+        .skills-board::before {
+            content: 'SKILLS';
+            position: absolute;
+            left: 50%;
+            top: 58px;
+            z-index: -1;
+            color: rgba(93, 127, 56, 0.17);
+            font-size: clamp(82px, 18vw, 190px);
+            font-weight: 800;
+            letter-spacing: 0.11em;
+            line-height: 0.9;
+            transform: translateX(-50%);
+            user-select: none;
+        }
+
+        .skills-board::after {
+            content: '';
+            position: absolute;
+            inset: 18px;
+            z-index: -1;
+            border: 2px dashed rgba(111, 141, 67, 0.34);
+            border-radius: 13px;
+            pointer-events: none;
+        }
+
+        .skills-stage {
+            position: relative;
+            width: min(100%, 840px);
+            height: 660px;
+            margin: 0 auto;
+        }
+
+        .skills-folder-art {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 5;
+            width: min(570px, 74vw);
+            max-width: 80%;
+            height: auto;
+            transform: translate(-50%, -42%) rotate(-1deg);
+            filter: drop-shadow(0 15px 9px rgba(70, 84, 39, 0.24));
+            transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.25, 1), filter 0.55s ease;
+            animation: skillFolderFloat 5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .skills-folder-hitarea {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 6;
+            width: min(570px, 74vw);
+            max-width: 80%;
+            aspect-ratio: 1.085 / 1;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            transform: translate(-50%, -42%);
+        }
+
+        .skills-zone {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+        }
+
+        .skill-card-button {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 7;
+            display: grid;
+            grid-template-columns: 52px 1fr;
+            align-items: center;
+            width: 190px;
+            min-height: 84px;
+            padding: 9px 11px 9px 9px;
+            color: var(--teal-dark);
+            background: var(--cream);
+            border: 3px solid var(--teal-dark);
+            border-radius: 8px;
+            box-shadow: 4px 5px 0 rgba(53, 79, 55, 0.28);
+            cursor: pointer;
+            font: inherit;
+            text-align: left;
+            opacity: 0;
+            transform: translate(-50%, -50%) translate(0, 42px) scale(0.56) rotate(var(--card-rotate));
+            transform-origin: center;
+            transition: transform 0.7s cubic-bezier(0.18, 0.82, 0.24, 1), opacity 0.32s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            animation: skillCardFloat 4.4s ease-in-out infinite;
+            animation-delay: var(--float-delay);
+        }
+
+        .skill-card-button:nth-child(1) { --card-x: -292px; --card-y: -192px; --card-rotate: -10deg; --float-delay: 0s; }
+        .skill-card-button:nth-child(2) { --card-x: -100px; --card-y: -242px; --card-rotate: -4deg; --float-delay: .35s; }
+        .skill-card-button:nth-child(3) { --card-x: 112px; --card-y: -232px; --card-rotate: 5deg; --float-delay: .7s; }
+        .skill-card-button:nth-child(4) { --card-x: 292px; --card-y: -158px; --card-rotate: 10deg; --float-delay: 1.05s; }
+        .skill-card-button:nth-child(5) { --card-x: -214px; --card-y: 34px; --card-rotate: -7deg; --float-delay: 1.4s; }
+        .skill-card-button:nth-child(6) { --card-x: 208px; --card-y: 52px; --card-rotate: 7deg; --float-delay: 1.75s; }
+
+        .skills-board:hover .skills-folder-art,
+        .skills-board:focus-within .skills-folder-art,
+        .skills-board.skills-open .skills-folder-art {
+            transform: translate(-50%, -45%) rotate(1deg) scale(1.025);
+            filter: drop-shadow(0 20px 11px rgba(70, 84, 39, 0.28));
+        }
+
+        .skills-board:hover .skill-card-button,
+        .skills-board:focus-within .skill-card-button,
+        .skills-board.skills-open .skill-card-button {
+            opacity: 1;
+            transform: translate(calc(-50% + var(--card-x)), calc(-50% + var(--card-y))) scale(1) rotate(var(--card-rotate));
+        }
+
+        .skill-card-button:hover,
+        .skill-card-button:focus-visible,
+        .skill-card-button.is-selected {
+            z-index: 12;
+            filter: brightness(1.04);
+            box-shadow: 6px 8px 0 rgba(53, 79, 55, 0.34);
+            outline: 3px solid rgba(232, 200, 114, 0.9);
+            outline-offset: 3px;
+        }
+
+        .skill-card-icon {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .skill-card-copy { min-width: 0; }
+
+        .skill-card-name {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .skill-card-hint {
+            display: block;
+            margin-top: 5px;
+            color: var(--brown-light);
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .skills-folder-hint {
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            z-index: 8;
+            padding: 7px 13px;
+            color: var(--teal-dark);
+            background: rgba(253, 246, 227, 0.88);
+            border: 2px solid var(--gold);
+            border-radius: 6px;
+            font-size: 13px;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .skill-detail-panel {
+            position: absolute;
+            left: 50%;
+            bottom: 54px;
+            z-index: 15;
+            width: min(650px, calc(100% - 32px));
+            min-height: 86px;
+            padding: 14px 20px;
+            background: rgba(253, 246, 227, 0.96);
+            border: 3px solid var(--teal-dark);
+            border-radius: 10px;
+            box-shadow: 5px 5px 0 rgba(53, 79, 55, 0.22);
+            text-align: center;
+            transform: translateX(-50%);
+        }
+
+        .skill-detail-panel strong {
+            display: block;
+            color: var(--teal-dark);
+            font-size: 19px;
+            line-height: 1.25;
+        }
+
+        .skill-detail-panel span {
+            display: block;
+            margin-top: 6px;
+            color: var(--brown);
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .skills-folder-hitarea:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 5px;
+            border-radius: 18px;
+        }
+
+        @keyframes skillFolderFloat {
+            0%, 100% { margin-top: 0; }
+            50% { margin-top: -7px; }
+        }
+
+        @keyframes skillCardFloat {
+            0%, 100% { margin-top: 0; }
+            50% { margin-top: -5px; }
+        }
+
+        @media (max-width: 720px) {
+            .skills-board {
+                min-height: 650px;
+            }
+
+            .skills-stage {
+                height: 590px;
+            }
+
+            .skill-card-button {
+                width: 156px;
+                min-height: 74px;
+                grid-template-columns: 42px 1fr;
+                padding: 7px 8px;
+            }
+
+            .skill-card-icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .skill-card-name {
+                font-size: 12px;
+            }
+
+            .skill-card-hint {
+                font-size: 10px;
+            }
+
+            .skill-card-button:nth-child(1) { --card-x: -142px; --card-y: -178px; }
+            .skill-card-button:nth-child(2) { --card-x: 0; --card-y: -230px; }
+            .skill-card-button:nth-child(3) { --card-x: 142px; --card-y: -178px; }
+            .skill-card-button:nth-child(4) { --card-x: -145px; --card-y: 20px; }
+            .skill-card-button:nth-child(5) { --card-x: 0; --card-y: 78px; }
+            .skill-card-button:nth-child(6) { --card-x: 145px; --card-y: 20px; }
+
+            .skills-folder-hint {
+                font-size: 11px;
+            }
+
+            .skill-detail-panel {
+                bottom: 45px;
+                width: calc(100% - 22px);
+                padding: 11px 12px;
+            }
+
+            .skill-detail-panel strong {
+                font-size: 16px;
+            }
+
+            .skill-detail-panel span {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .skills-page-intro {
+                font-size: 14px;
+                text-align: left;
+            }
+
+            .skills-board {
+                min-height: 610px;
+                border-radius: 14px;
+            }
+
+            .skills-stage {
+                height: 550px;
+            }
+
+            .skills-folder-art,
+            .skills-folder-hitarea {
+                width: 84vw;
+                max-width: 92%;
+            }
+
+            .skill-card-button {
+                width: 130px;
+                min-height: 66px;
+                grid-template-columns: 34px 1fr;
+                padding: 6px;
+                border-width: 2px;
+            }
+
+            .skill-card-icon {
+                width: 31px;
+                height: 31px;
+            }
+
+            .skill-card-name {
+                font-size: 10px;
+            }
+
+            .skill-card-hint {
+                margin-top: 3px;
+                font-size: 9px;
+            }
+
+            .skill-card-button:nth-child(1) { --card-x: -92px; --card-y: -164px; }
+            .skill-card-button:nth-child(2) { --card-x: 0; --card-y: -201px; }
+            .skill-card-button:nth-child(3) { --card-x: 92px; --card-y: -164px; }
+            .skill-card-button:nth-child(4) { --card-x: -94px; --card-y: 10px; }
+            .skill-card-button:nth-child(5) { --card-x: 0; --card-y: 60px; }
+            .skill-card-button:nth-child(6) { --card-x: 94px; --card-y: 10px; }
+
+            .skills-folder-hint {
+                bottom: 0;
+                max-width: calc(100% - 24px);
+                overflow: hidden;
+                font-size: 10px;
+                text-overflow: ellipsis;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .skills-folder-art,
+            .skill-card-button {
+                animation: none;
+                transition: none;
+            }
+        }
+
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -1247,6 +1606,18 @@
 
         .portfolio-drawing-preview {
             background: #F5EAD6;
+        }
+
+        .portfolio-web-preview {
+            height: 220px;
+            padding: 10px;
+            background: #151512;
+        }
+
+        .portfolio-web-preview img {
+            object-fit: contain;
+            object-position: center;
+            background: #151512;
         }
 
         .portfolio-cover-link {
@@ -1901,7 +2272,7 @@
         
         <!-- 角色卡 -->
         <div class="splash-character">
-            <img src="images/board.png" alt="CAN的小镇名片">
+            <img src="images/board.webp" alt="CAN的小镇名片">
         </div>
         <div class="splash-title">✨ 欢迎翻阅CAN的札记 ✨</div>
     </div>
@@ -1920,7 +2291,7 @@
             <div class="nav-logo" onclick="navigateTo('home')">CAN的星露谷札记</div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home" class="active" onclick="navigateTo('home')">首页</a></li>
-                <li><a href="#life" onclick="navigateTo('life')">我的生活小览</a></li>
+                <li><a href="#life" onclick="navigateTo('life')">我的技能卡片</a></li>
                 <li><a href="#practice" onclick="navigateTo('practice')">实践与学工</a></li>
                 <li><a href="#portfolio" onclick="navigateTo('portfolio')">作品集</a></li>
                 <li><a href="#guestbook" onclick="navigateTo('guestbook')">留言板</a></li>
@@ -1949,21 +2320,21 @@
 
                 <div class="home-3d-scene" id="homeScene">
                     <div class="home-center-photo" onclick="toggleFanIcons()">
-                        <img src="images/myphoto.png" alt="曹安妮">
+                        <img src="images/myphoto.webp" alt="曹安妮">
                     </div>
                     <div class="home-photo-hint">✨ 点击图片，探索更多 ✨</div>
                     
                     <div class="home-fan-icons" id="fanIcons">
                         <div class="home-fan-icon fan-1" onclick="handleFanClick('life')">
-                            <img src="images/icon-life.png" alt="我的生活小览" class="fan-icon-img">
-                            <div class="fan-icon-text">我的生活小览</div>
+                            <img src="images/icon-life.webp" alt="我的技能卡片" class="fan-icon-img">
+                            <div class="fan-icon-text">我的技能卡片</div>
                         </div>
                         <div class="home-fan-icon fan-2" onclick="handleFanClick('practice')">
-                            <img src="images/icon-practice.png" alt="实践与学工" class="fan-icon-img">
+                            <img src="images/icon-practice.webp" alt="实践与学工" class="fan-icon-img">
                             <div class="fan-icon-text">实践与学工</div>
                         </div>
                         <div class="home-fan-icon fan-3" onclick="handleFanClick('portfolio')">
-                            <img src="images/icon-portfolio.png" alt="作品集" class="fan-icon-img">
+                            <img src="images/icon-portfolio.webp" alt="作品集" class="fan-icon-img">
                             <div class="fan-icon-text">作品集</div>
                         </div>
                     </div>
@@ -1982,51 +2353,47 @@
             </div>
         </div>
 
-        <!-- 我的生活小览 -->
+        <!-- 我的技能卡片 -->
         <div id="page-life" class="page">
-            <h2 class="section-title">🌿 <span class="decor">✦</span> 我的生活小览 <span class="decor">✦</span> 🌿</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-year">大一 · 启程</div>
-                        <div class="timeline-title">初入校园的憧憬与探索</div>
-                        <div class="timeline-content">刚踏入大学校园，一切都是那么新鲜和美好。参加了各种社团活动，认识了很多志同道合的朋友。在专业课学习中打下了坚实的基础，同时也开始思考未来的方向。那时候的我，对未来充满了无限的憧憬和期待。</div>
+            <h2 class="section-title">🗂️ <span class="decor">✦</span> 我的技能卡片 <span class="decor">✦</span> 🗂️</h2>
+            <p class="skills-page-intro">把经历收进技能文件夹。将鼠标移到文件夹上，查看我在理论研读、调查研究、教学设计、项目统筹、影像传播与视觉表达中的六种能力。</p>
+            <div class="skills-board" id="skillsBoard">
+                <div class="skills-stage">
+                    <div class="skills-zone">
+                        <button class="skill-card-button" type="button" data-skill="theory" aria-label="查看理论研读与学术写作技能">
+                            <img class="skill-card-icon" src="skill/skill1.webp" alt="">
+                            <span class="skill-card-copy"><span class="skill-card-name">理论研读<br>与学术写作</span><span class="skill-card-hint">文献 · 论文</span></span>
+                        </button>
+                        <button class="skill-card-button" type="button" data-skill="research" aria-label="查看调查研究与数字分析技能">
+                            <img class="skill-card-icon" src="skill/skill2.webp" alt="">
+                            <span class="skill-card-copy"><span class="skill-card-name">调查研究<br>与数字分析</span><span class="skill-card-hint">调研 · 数据</span></span>
+                        </button>
+                        <button class="skill-card-button" type="button" data-skill="teaching" aria-label="查看思政课程与教学设计技能">
+                            <img class="skill-card-icon" src="skill/skill3.webp" alt="">
+                            <span class="skill-card-copy"><span class="skill-card-name">思政课程<br>与教学设计</span><span class="skill-card-hint">课程 · 教学</span></span>
+                        </button>
+                        <button class="skill-card-button" type="button" data-skill="management" aria-label="查看项目统筹与组织管理技能">
+                            <img class="skill-card-icon" src="skill/skill4.webp" alt="">
+                            <span class="skill-card-copy"><span class="skill-card-name">项目统筹<br>与组织管理</span><span class="skill-card-hint">统筹 · 协作</span></span>
+                        </button>
+                        <button class="skill-card-button" type="button" data-skill="media" aria-label="查看新媒体传播与影像制作技能">
+                            <img class="skill-card-icon" src="skill/skill5.webp" alt="">
+                            <span class="skill-card-copy"><span class="skill-card-name">新媒体传播<br>与影像制作</span><span class="skill-card-hint">传播 · 影像</span></span>
+                        </button>
+                        <button class="skill-card-button" type="button" data-skill="visual" aria-label="查看视觉设计与沟通表达技能">
+                            <img class="skill-card-icon" src="skill/skill6.webp" alt="">
+                            <span class="skill-card-copy"><span class="skill-card-name">视觉设计<br>与沟通表达</span><span class="skill-card-hint">视觉 · 表达</span></span>
+                        </button>
+                        <img class="skills-folder-art" src="skill/skill%20show.webp" alt="SKILL files 像素风技能文件夹">
+                        <button class="skills-folder-hitarea" id="skillsFolderHitarea" type="button" aria-label="展开技能卡片" aria-expanded="false" onclick="document.getElementById('skillsBoard').classList.toggle('skills-open'); this.setAttribute('aria-expanded', document.getElementById('skillsBoard').classList.contains('skills-open'))"></button>
+                        <div class="skills-folder-hint">悬停文件夹展开 · 点击卡片查看详情</div>
+                        <div class="skill-detail-panel" id="skillDetailPanel" aria-live="polite">
+                            <strong>选择一张技能卡片</strong>
+                            <span>卡片会从文件夹中弹出，点击后查看对应能力与实践证明。</span>
+                        </div>
                     </div>
-                    <div class="timeline-decoration">🌱</div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-year">大二 · 成长</div>
-                        <div class="timeline-title">在实践中收获与成长</div>
-                        <div class="timeline-content">这一年，我开始参与各种学术竞赛和科研项目。从最初的迷茫不知所措，到后来能够独当一面，这个过程充满了挑战但也收获满满。同时，我也在学生工作中锻炼了自己的组织能力和团队协作能力。</div>
-                    </div>
-                    <div class="timeline-decoration">🌿</div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-year">大三 · 定向</div>
-                        <div class="timeline-title">在实践中找到方向</div>
-                        <div class="timeline-content">大三，我开始在学生工作与社会实践中承担更多统筹责任：参与乡村共富调研、雨花英烈精神宣讲和研学课程制作，把课堂所学转化为面向真实问题的调研与行动；在易班学生发展中心、青马工程等组织工作中，我进一步锻炼了协调、策划与表达能力，也逐渐明确了继续深造、用马克思主义理论回应现实问题的方向。</div>
-                    </div>
-                    <div class="timeline-decoration">🌳</div>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-year">大四 · 收获</div>
-                        <div class="timeline-title">回望过去，展望未来</div>
-                        <div class="timeline-content">转眼间，大学时光即将画上句号。这一年，我完成了毕业论文，拿到了心仪高校的研究生录取通知书。回顾这四年的点点滴滴，虽然有过迷茫和挫折，但更多的是成长和收获。感谢一路上陪伴我的老师和朋友们！</div>
-                    </div>
-                    <div class="timeline-decoration">🌾</div>
                 </div>
             </div>
-
         </div>
 
         <!-- 实践与学工 -->
@@ -2053,7 +2420,7 @@
                         <h3 class="card-title">易班学生发展中心 · 联络部部长</h3>
                         <span class="card-date">2023.09—2024.06</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">🤝</div>
+                    <div class="card-image"><img src="practice/易班学生发展中心联络部.webp" alt="易班学生发展中心联络部工作照片"></div>
                     <div class="card-description">统筹校院两级易班工作联动，策划并执行校级大型学生活动；承担活动组织协调、现场答疑与跨校骨干交流培训对接。</div>
                     <div class="card-meta">
                         <span>组织统筹</span>
@@ -2066,7 +2433,7 @@
                         <h3 class="card-title">第十六期“青马工程”培训班 · 分管组长</h3>
                         <span class="card-date">2024.06—2025.07</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">📖</div>
+                    <div class="card-image"><img src="practice/青马工程.webp" alt="青马工程培训班工作照片"></div>
                     <div class="card-description">负责小组学员管理、任务分工与进度跟进，策划并主持圆桌会议等理论学习研讨，参与微课录制与企业党建专项调研。</div>
                     <div class="card-meta">
                         <span>理论学习</span>
@@ -2079,7 +2446,7 @@
                         <h3 class="card-title">易班学生发展中心 · 主席</h3>
                         <span class="card-date">2024.07—2025.07</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">🌐</div>
+                    <div class="card-image"><img src="practice/易班学生发展中心主席.webp" alt="易班学生发展中心主席工作照片"></div>
                     <div class="card-description">分管办公室和内容部，负责工作站日常运行、场地设备与值班调度；策划校级品牌活动，接待高校调研队伍，牵头完善工作流程与制度手册。</div>
                     <div class="card-meta">
                         <span>学生组织管理</span>
@@ -2092,7 +2459,7 @@
                         <h3 class="card-title">马克思主义理论专业班级 · 团支书</h3>
                         <span class="card-date">2024.07—2026.07</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">🌱</div>
+                    <div class="card-image"><img src="practice/团支书.webp" alt="班级团支书工作照片"></div>
                     <div class="card-description">主持团支部日常工作，组织理论学习与主题团日，做好团员管理服务和思想引领；撰写申报材料，统筹支部获评校“五四红旗团支部”。</div>
                     <div class="card-meta">
                         <span>团支部建设</span>
@@ -2105,7 +2472,7 @@
                         <h3 class="card-title">马克思主义学院党建工作中心 · 教育培训部主任</h3>
                         <span class="card-date">2025.06—2026.06</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">🗂️</div>
+                    <div class="card-image"><img src="practice/党建工作中心主任.webp" alt="党建工作中心工作照片"></div>
                     <div class="card-description">配合学院党委开展各级党校培训与课程管理，组织入党申请书征集审核，规范党员发展流程，统筹推优入党及档案材料归档。</div>
                     <div class="card-meta">
                         <span>党建工作</span>
@@ -2118,7 +2485,7 @@
                         <h3 class="card-title">南京师范大学学生工作处 · 思政助理</h3>
                         <span class="card-date">2025.09—2026.07</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">🧭</div>
+                    <div class="card-image"><img src="practice/思政助理.webp" alt="学生工作处思政助理工作照片"></div>
                     <div class="card-description">协助完成易班课题结项项目书撰写，参与网络文化艺术节、十佳班级评选及培训班筹办，并承担思想教育科财务报送等基础事务。</div>
                     <div class="card-meta">
                         <span>思政教育</span>
@@ -2131,7 +2498,7 @@
                         <h3 class="card-title">大丰区妇女联合会 · 宣传部实习生</h3>
                         <span class="card-date">2024.07—2024.08</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">📰</div>
+                    <div class="card-image"><img src="practice/大丰区妇女联合会.webp" alt="大丰区妇女联合会实习照片"></div>
                     <div class="card-description">撰写新闻稿，编辑并运营微信公众号，参与“盐家优教”家庭教育活动与书香文化月等线下活动的组织开展。</div>
                     <div class="card-meta">
                         <span>宣传实践</span>
@@ -2144,7 +2511,7 @@
                         <h3 class="card-title">兰考县谷营镇齐场小学 · 支教教师</h3>
                         <span class="card-date">2024.08—2024.09</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">📚</div>
+                    <div class="card-image"><img src="practice/兰考县谷营镇齐场小学.webp" alt="齐场小学支教照片"></div>
                     <div class="card-description">讲授“雨花英烈精神”主题思政课，参与活动课与户外体育教学；独立完成5期夏令营纪录片摄制剪辑，并设计发放学生调研问卷。</div>
                     <div class="card-meta">
                         <span>支教实践</span>
@@ -2157,7 +2524,7 @@
                         <h3 class="card-title">2203班公众号“贰贰叁号航行日志” · 编辑</h3>
                         <span class="card-date">2022.09—2026.07</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">✍️</div>
+                    <div class="card-image"><img src="practice/2203班公众号编辑.webp" alt="2203班公众号编辑工作照片"></div>
                     <div class="card-description">负责研学、心理班会与主题团课的影像记录，撰写推送、制作首图和展演物料，参与校十佳班级申报与材料排版。</div>
                     <div class="card-meta">
                         <span>新媒体运营</span>
@@ -2170,7 +2537,7 @@
                         <h3 class="card-title">盐城市大丰籍大学生驻外团工委 · 组织部部长</h3>
                         <span class="card-date">2026.08—至今</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">🚩</div>
+                    <div class="card-image"><img src="practice/驻外团工委.webp" alt="驻外团工委工作照片"></div>
                     <div class="card-description">协助统筹团务工作，负责团员联络管理与主题团日策划；牵头返乡大学生思想调研和青年交流活动，做好人员协调、资料整理与活动纪实。</div>
                     <div class="card-meta">
                         <span>现任</span>
@@ -2183,7 +2550,7 @@
                         <h3 class="card-title">暑期社会实践 · 乡村共富调研</h3>
                         <span class="card-date">2023.07—2023.08</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">🌾</div>
+                    <div class="card-image"><img src="practice/乡村共富调研.webp" alt="乡村共富调研照片"></div>
                     <div class="card-description">主持团队走访盐城、南京、苏州、泰州、宿迁等地13处乡村，调研乡村积分治理、数字农业与省级特色田园乡村发展经验，获优秀团队一等奖、优秀调研报告二等奖。</div>
                     <div class="card-meta">
                         <span>社会调研</span>
@@ -2196,7 +2563,7 @@
                         <h3 class="card-title">寒假社会实践 · 数智红色文化资源调查</h3>
                         <span class="card-date">2025.01—2025.02</span>
                     </div>
-                    <div class="card-image" aria-hidden="true">🏛️</div>
+                    <div class="card-image"><img src="practice/数智红色文化资源调查.webp" alt="数智红色文化资源调查照片"></div>
                     <div class="card-description">主持全国“数智时代红色文化资源”调查，走访南京梅园新村等10余所红色场馆，开展资源记录与传播路径调研，获返家乡社会实践专项二等奖。</div>
                     <div class="card-meta">
                         <span>红色文化</span>
@@ -2204,7 +2571,6 @@
                     </div>
                 </div>
             </div>
-            <p class="practice-section-note">工作经历中的时间与职务均依据《武汉大学研究生会未来学院秋季招新报名表》整理；相关实践成果已在本页对应经历中一并呈现。</p>
         </div>
 
         <!-- 作品集 -->
@@ -2215,84 +2581,85 @@
                 <button class="filter-btn" data-filter="visual" onclick="filterPortfolio('visual')">📈 可视化作品</button>
                 <button class="filter-btn" data-filter="video" onclick="filterPortfolio('video')">🎬 视频作品</button>
                 <button class="filter-btn" data-filter="drawing" onclick="filterPortfolio('drawing')">📚 绘本作品</button>
+                <button class="filter-btn" data-filter="web" onclick="filterPortfolio('web')">💻 网页作品</button>
                 <button class="filter-btn" data-filter="audio" onclick="filterPortfolio('audio')">🎵 音频作品</button>
             </div>
             <div class="portfolio-grid" id="portfolioGrid">
                 <!-- PPT作品 -->
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt1.png" alt="PPT 1 大创项目汇报">
+                        <img src="asset/ppt/ppt1.webp" alt="PPT 1 支部述职">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">PPT 1 · 大创项目汇报</h3>
+                        <h3 class="portfolio-title">PPT 1 · 支部述职</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/ppt/ppt1.png" target="_blank" class="btn btn-sm">查看大图</a>
-                            <a href="asset/ppt/ppt1.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                            <a href="asset/ppt/ppt1.webp" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt1.webp" download class="btn btn-sm btn-secondary">下载图片</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt2.png" alt="PPT 2 大挑学术汇报">
+                        <img src="asset/ppt/ppt2.webp" alt="PPT 2 大创结题汇报">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">PPT 2 · 大挑学术汇报</h3>
+                        <h3 class="portfolio-title">PPT 2 · 大创结题汇报</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/ppt/ppt2.png" target="_blank" class="btn btn-sm">查看大图</a>
-                            <a href="asset/ppt/ppt2.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                            <a href="asset/ppt/ppt2.webp" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt2.webp" download class="btn btn-sm btn-secondary">下载图片</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt3.png" alt="PPT 3 小挑商业汇报">
+                        <img src="asset/ppt/ppt3.webp" alt="PPT 3 十佳班级展演">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">PPT 3 · 小挑商业汇报</h3>
+                        <h3 class="portfolio-title">PPT 3 · 十佳班级展演</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/ppt/ppt3.png" target="_blank" class="btn btn-sm">查看大图</a>
-                            <a href="asset/ppt/ppt3.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                            <a href="asset/ppt/ppt3.webp" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt3.webp" download class="btn btn-sm btn-secondary">下载图片</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt4.png" alt="PPT 4 学术交流汇报">
+                        <img src="asset/ppt/ppt4.webp" alt="PPT 4 国创赛汇报">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">PPT 4 · 学术交流汇报 1</h3>
+                        <h3 class="portfolio-title">PPT 4 · 国创赛汇报</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/ppt/ppt4.png" target="_blank" class="btn btn-sm">查看大图</a>
-                            <a href="asset/ppt/ppt4.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                            <a href="asset/ppt/ppt4.webp" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt4.webp" download class="btn btn-sm btn-secondary">下载图片</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt5.png" alt="PPT 5 学术交流汇报">
+                        <img src="asset/ppt/ppt5.webp" alt="PPT 5 学工课题答辩">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">PPT 5 · 学术交流汇报 2</h3>
+                        <h3 class="portfolio-title">PPT 5 · 学工课题答辩</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/ppt/ppt5.png" target="_blank" class="btn btn-sm">查看大图</a>
-                            <a href="asset/ppt/ppt5.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                            <a href="asset/ppt/ppt5.webp" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt5.webp" download class="btn btn-sm btn-secondary">下载图片</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt6.png" alt="PPT 6 学术交流汇报">
+                        <img src="asset/ppt/ppt6.webp" alt="PPT 6 大挑现场答辩">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">PPT 6 · 学术交流汇报 3</h3>
+                        <h3 class="portfolio-title">PPT 6 · 大挑现场答辩</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/ppt/ppt6.png" target="_blank" class="btn btn-sm">查看大图</a>
-                            <a href="asset/ppt/ppt6.png" download class="btn btn-sm btn-secondary">下载图片</a>
+                            <a href="asset/ppt/ppt6.webp" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/ppt/ppt6.webp" download class="btn btn-sm btn-secondary">下载图片</a>
                         </div>
                     </div>
                 </div>
@@ -2300,84 +2667,84 @@
                 <!-- 可视化作品 -->
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis1.jpg" alt="信息可视化作品01">
+                        <img src="asset/visual/vis1.webp" alt="稼穑千年封面">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">信息可视化作品01</h3>
+                        <h3 class="portfolio-title">稼穑千年封面</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/visual/vis1.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/visual/vis1.webp" target="_blank" class="btn btn-sm">查看大图</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis2.jpg" alt="信息可视化作品02">
+                        <img src="asset/visual/vis2.webp" alt="篇章一 沃土生民">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">信息可视化作品02</h3>
+                        <h3 class="portfolio-title">篇章一 沃土生民</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/visual/vis2.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/visual/vis2.webp" target="_blank" class="btn btn-sm">查看大图</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis3.jpg" alt="信息可视化作品03">
+                        <img src="asset/visual/vis3.webp" alt="篇章二 利器成道">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">信息可视化作品03</h3>
+                        <h3 class="portfolio-title">篇章二 利器成道</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/visual/vis3.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/visual/vis3.webp" target="_blank" class="btn btn-sm">查看大图</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis4.jpg" alt="信息可视化作品04">
+                        <img src="asset/visual/vis4.webp" alt="篇章三 沃水生金">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">信息可视化作品04</h3>
+                        <h3 class="portfolio-title">篇章三 沃水生金</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/visual/vis4.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/visual/vis4.webp" target="_blank" class="btn btn-sm">查看大图</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis5.jpg" alt="信息可视化作品05">
+                        <img src="asset/visual/vis5.webp" alt="篇章四 四时循律">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">信息可视化作品05</h3>
+                        <h3 class="portfolio-title">篇章四 四时循律</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/visual/vis5.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/visual/vis5.webp" target="_blank" class="btn btn-sm">查看大图</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis6.jpg" alt="信息可视化作品06">
+                        <img src="asset/visual/vis6.webp" alt="篇章五 稼穑经纬">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">信息可视化作品06</h3>
+                        <h3 class="portfolio-title">篇章五 稼穑经纬</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/visual/vis6.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/visual/vis6.webp" target="_blank" class="btn btn-sm">查看大图</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis7.jpg" alt="信息可视化作品07">
+                        <img src="asset/visual/vis7.webp" alt="篇章六 仓廪丰实">
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">信息可视化作品07</h3>
+                        <h3 class="portfolio-title">篇章六 仓廪丰实</h3>
                         <div class="portfolio-actions">
-                            <a href="asset/visual/vis7.jpg" target="_blank" class="btn btn-sm">查看大图</a>
+                            <a href="asset/visual/vis7.webp" target="_blank" class="btn btn-sm">查看大图</a>
                         </div>
                     </div>
                 </div>
@@ -2386,14 +2753,14 @@
                 <div class="portfolio-card" data-category="video">
                     <div class="portfolio-preview portfolio-video-preview">
                         <div class="portfolio-video">
-                            <video controls playsinline preload="metadata" poster="asset/video/video1%20show.png">
+                            <video controls playsinline preload="metadata" poster="asset/video/video1%20show.webp">
                                 <source src="asset/video/video1.mp4" type="video/mp4">
                                 您的浏览器不支持视频播放
                             </video>
                         </div>
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">作品视频1</h3>
+                        <h3 class="portfolio-title">唱响新时代长江之歌微课</h3>
                         <div class="portfolio-actions">
                             <a href="asset/video/video1.mp4" download class="btn btn-sm">下载视频</a>
                         </div>
@@ -2403,14 +2770,14 @@
                 <div class="portfolio-card" data-category="video">
                     <div class="portfolio-preview portfolio-video-preview">
                         <div class="portfolio-video">
-                            <video controls playsinline preload="metadata" poster="asset/video/video2%20show.png">
+                            <video controls playsinline preload="metadata" poster="asset/video/video2%20show.webp">
                                 <source src="asset/video/video2.mp4" type="video/mp4">
                                 您的浏览器不支持视频播放
                             </video>
                         </div>
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">作品视频2</h3>
+                        <h3 class="portfolio-title">大山里的彩虹公益广告</h3>
                         <div class="portfolio-actions">
                             <a href="asset/video/video2.mp4" download class="btn btn-sm">下载视频</a>
                         </div>
@@ -2420,14 +2787,14 @@
                 <div class="portfolio-card" data-category="video">
                     <div class="portfolio-preview portfolio-video-preview">
                         <div class="portfolio-video">
-                            <video controls playsinline preload="metadata" poster="asset/video/video3%20show.png">
+                            <video controls playsinline preload="metadata" poster="asset/video/video3%20show.webp">
                                 <source src="asset/video/video3.mp4" type="video/mp4">
                                 您的浏览器不支持视频播放
                             </video>
                         </div>
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">作品视频3</h3>
+                        <h3 class="portfolio-title">你好南京 风光特辑</h3>
                         <div class="portfolio-actions">
                             <a href="asset/video/video3.mp4" download class="btn btn-sm">下载视频</a>
                         </div>
@@ -2437,12 +2804,12 @@
                 <!-- 绘本作品 -->
                 <div class="portfolio-card" data-category="drawing">
                     <div class="portfolio-preview portfolio-drawing-preview">
-                        <a href="asset/drawing/drawing1.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本作品1">
-                            <img src="asset/drawing/drawing1%20show.png" alt="绘本作品1展示图">
+                        <a href="asset/drawing/drawing1.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本：袁咨桐-绽放的革命血在沸">
+                            <img src="asset/drawing/drawing1%20show.webp" alt="袁咨桐-绽放的革命血在沸">
                         </a>
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">绘本作品 1</h3>
+                        <h3 class="portfolio-title">袁咨桐-绽放的革命血在沸</h3>
                         <div class="portfolio-actions">
                             <a href="asset/drawing/drawing1.pdf" target="_blank" rel="noopener" class="btn btn-sm">查看完整绘本</a>
                             <a href="asset/drawing/drawing1.pdf" download class="btn btn-sm btn-secondary">下载 PDF</a>
@@ -2452,12 +2819,12 @@
 
                 <div class="portfolio-card" data-category="drawing">
                     <div class="portfolio-preview portfolio-drawing-preview">
-                        <a href="asset/drawing/drawing2.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本作品2">
-                            <img src="asset/drawing/drawing2%20show.png" alt="绘本作品2展示图">
+                        <a href="asset/drawing/drawing2.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本：丁香-丁香花又开">
+                            <img src="asset/drawing/drawing2%20show.webp" alt="丁香-丁香花又开">
                         </a>
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">绘本作品 2</h3>
+                        <h3 class="portfolio-title">丁香-丁香花又开</h3>
                         <div class="portfolio-actions">
                             <a href="asset/drawing/drawing2.pdf" target="_blank" rel="noopener" class="btn btn-sm">查看完整绘本</a>
                             <a href="asset/drawing/drawing2.pdf" download class="btn btn-sm btn-secondary">下载 PDF</a>
@@ -2467,15 +2834,30 @@
 
                 <div class="portfolio-card" data-category="drawing">
                     <div class="portfolio-preview portfolio-drawing-preview">
-                        <a href="asset/drawing/drawing3.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本作品3">
-                            <img src="asset/drawing/drawing3%20show.png" alt="绘本作品3展示图">
+                        <a href="asset/drawing/drawing3.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本：郭凤韶-未完成的计划">
+                            <img src="asset/drawing/drawing3%20show.webp" alt="郭凤韶-未完成的计划">
                         </a>
                     </div>
                     <div class="portfolio-content">
-                        <h3 class="portfolio-title">绘本作品 3</h3>
+                        <h3 class="portfolio-title">郭凤韶-未完成的计划</h3>
                         <div class="portfolio-actions">
                             <a href="asset/drawing/drawing3.pdf" target="_blank" rel="noopener" class="btn btn-sm">查看完整绘本</a>
                             <a href="asset/drawing/drawing3.pdf" download class="btn btn-sm btn-secondary">下载 PDF</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 网页作品 -->
+                <div class="portfolio-card" data-category="web">
+                    <div class="portfolio-preview portfolio-web-preview">
+                        <a href="https://cancancan510.github.io/semantic-erosion-archive/" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="打开网页作品：语义磨损档案馆">
+                            <img src="asset/web/semantic-erosion-archive-show.jpg" alt="语义磨损档案馆网页首屏">
+                        </a>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3 class="portfolio-title">语义磨损档案馆</h3>
+                        <div class="portfolio-actions">
+                            <a href="https://cancancan510.github.io/semantic-erosion-archive/" target="_blank" rel="noopener" class="btn btn-sm">打开网页作品</a>
                         </div>
                     </div>
                 </div>
@@ -2715,6 +3097,64 @@
             fanIconsOpen = false;
         }
 
+        // ===== 技能卡片交互 =====
+        const skillDetails = {
+            theory: {
+                title: '理论研读与学术写作',
+                text: '从马克思主义经典文献研读，到马克思主义科技观、红色记忆等专题研究，完成论文写作、学术汇报与现场发言。'
+            },
+            research: {
+                title: '调查研究与数字分析',
+                text: '参与乡村共富、红色场馆与思政教育调研，完成实地走访、问卷设计、资料整理，并尝试使用 Python 与文本分析方法处理数字媒介资料。'
+            },
+            teaching: {
+                title: '思政课程与教学设计',
+                text: '将雨花英烈精神、乡村共富等主题转化为思政课、研学课程、绘本和活动，积累小学支教、课程录制与教学组织经验。'
+            },
+            management: {
+                title: '项目统筹与组织管理',
+                text: '在易班、青马工程、团支部和党建工作中负责任务拆解、人员协调、进度跟进、现场执行与流程优化。'
+            },
+            media: {
+                title: '新媒体传播与影像制作',
+                text: '能够完成新闻稿、微信公众号推送、活动宣传、摄影记录和视频剪辑，独立完成夏令营纪录片等影像内容。'
+            },
+            visual: {
+                title: '视觉设计与沟通表达',
+                text: '通过信息可视化、绘本、宣传物料、主持表达和跨校交流，将复杂内容转化为清晰、易理解的视觉与语言表达。'
+            }
+        };
+
+        function toggleSkillsBoard() {
+            const board = document.getElementById('skillsBoard');
+            if (board) board.classList.toggle('skills-open');
+        }
+
+        function initSkillCards() {
+            const board = document.getElementById('skillsBoard');
+            const panel = document.getElementById('skillDetailPanel');
+            const folderHitarea = document.getElementById('skillsFolderHitarea');
+            if (!board || !panel) return;
+
+            if (folderHitarea) {
+                folderHitarea.addEventListener('click', () => {
+                    const open = board.classList.toggle('skills-open');
+                    folderHitarea.setAttribute('aria-expanded', String(open));
+                });
+            }
+
+            board.querySelectorAll('.skill-card-button').forEach(card => {
+                card.addEventListener('click', () => {
+                    const detail = skillDetails[card.dataset.skill];
+                    if (!detail) return;
+                    board.querySelectorAll('.skill-card-button').forEach(item => item.classList.remove('is-selected'));
+                    card.classList.add('is-selected');
+                    panel.querySelector('strong').textContent = detail.title;
+                    panel.querySelector('span').textContent = detail.text;
+                });
+            });
+        }
+
         // ===== 烟花效果 =====
         function createFireworks() {
             const container = document.getElementById('fireworks');
@@ -2876,6 +3316,7 @@
                 navigateTo('home');
             }
             loadGuestbook();
+            initSkillCards();
         });
     </script>
 </body>
