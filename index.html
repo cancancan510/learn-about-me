@@ -2078,6 +2078,181 @@
             }
         }
 
+        /* Touch layouts use normal flow so controls never sit on top of each other. */
+        @media (max-width: 720px) {
+            .home-3d-scene {
+                width: min(100%, 360px) !important;
+                height: auto !important;
+                min-height: 0;
+            }
+
+            .home-center-photo {
+                width: min(220px, 72vw) !important;
+                max-width: none;
+                margin: 0 auto 16px;
+            }
+
+            .home-center-photo img {
+                width: 100%;
+                height: auto;
+            }
+
+            .home-fan-icons {
+                position: static;
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 10px;
+                width: 100%;
+                height: auto;
+                margin-top: 10px;
+                pointer-events: none;
+            }
+
+            .home-fan-icons .home-fan-icon {
+                position: relative;
+                inset: auto;
+                width: 100%;
+                min-width: 0;
+                height: auto;
+                min-height: 78px;
+                margin: 0;
+                padding: 7px 4px;
+                opacity: 0;
+                transform: translateY(12px) scale(0.92) !important;
+                animation: none;
+                pointer-events: none;
+            }
+
+            .home-fan-icons .home-fan-icon.active {
+                opacity: 1;
+                transform: translateY(0) scale(1) !important;
+                pointer-events: auto;
+            }
+
+            .home-fan-icons .home-fan-icon.fan-1,
+            .home-fan-icons .home-fan-icon.fan-2,
+            .home-fan-icons .home-fan-icon.fan-3,
+            .home-fan-icons .home-fan-icon.fan-1.active,
+            .home-fan-icons .home-fan-icon.fan-2.active,
+            .home-fan-icons .home-fan-icon.fan-3.active {
+                top: auto;
+                right: auto;
+                bottom: auto;
+                left: auto;
+                margin: 0;
+            }
+
+            .home-fan-icons .home-fan-icon .fan-icon-img {
+                width: 42px;
+                height: 42px;
+                margin-bottom: 4px;
+            }
+
+            .home-fan-icons .home-fan-icon .fan-icon-text,
+            .home-fan-icons .home-fan-icon.fan-1 .fan-icon-text {
+                width: auto;
+                font-size: 11px;
+                line-height: 1.2;
+            }
+
+            .skills-board {
+                min-height: 0;
+                overflow: visible;
+                padding: 10px;
+            }
+
+            .skills-stage {
+                width: 100%;
+                height: auto;
+            }
+
+            .skills-zone {
+                position: relative;
+                left: auto;
+                top: auto;
+                width: 100%;
+                height: auto;
+                transform: none;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                padding: 286px 4px 14px;
+            }
+
+            .skills-folder-art,
+            .skills-folder-hitarea {
+                left: 50%;
+                top: 18px;
+                width: min(300px, 82vw);
+                max-width: 100%;
+                transform: translateX(-50%) rotate(-1deg);
+            }
+
+            .skills-folder-art {
+                animation: none;
+            }
+
+            .skills-board:hover .skills-folder-art,
+            .skills-board:focus-within .skills-folder-art,
+            .skills-board.skills-open .skills-folder-art {
+                transform: translateX(-50%) rotate(1deg);
+            }
+
+            .skills-zone .skill-card-button {
+                position: relative;
+                left: auto;
+                top: auto;
+                right: auto;
+                bottom: auto;
+                width: 100%;
+                min-height: 76px;
+                margin: 0;
+                transform: translateY(12px) scale(0.96) !important;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                animation: none;
+            }
+
+            .skills-board:hover .skills-zone .skill-card-button {
+                transform: translateY(12px) scale(0.96) !important;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+
+            .skills-board.skills-open .skills-zone .skill-card-button {
+                transform: translateY(0) scale(1) !important;
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+
+            .skills-folder-hint {
+                position: relative;
+                left: auto;
+                bottom: auto;
+                grid-column: 1 / -1;
+                width: fit-content;
+                max-width: 100%;
+                margin: 4px auto 0;
+                transform: none;
+                white-space: normal;
+                text-align: center;
+            }
+
+            .skill-detail-panel {
+                position: relative;
+                left: auto;
+                bottom: auto;
+                grid-column: 1 / -1;
+                width: 100%;
+                min-height: 0;
+                margin-top: 2px;
+                transform: none;
+            }
+        }
+
         .decor-element {
             position: fixed;
             font-size: 24px;
@@ -2163,7 +2338,34 @@
         }
 
         .fly-plane-canvas {
+            display: none;
             background: transparent;
+        }
+
+        .fly-plane-fallback {
+            position: absolute;
+            left: 50%;
+            top: 42%;
+            z-index: 18;
+            width: min(300px, 48vw);
+            height: auto;
+            opacity: 0.82;
+            transform: translate(-48vw, -22vh) rotate(-18deg) scale(0.42);
+            pointer-events: none;
+            image-rendering: pixelated;
+            animation: fallbackPlaneFly 4.1s ease-in-out infinite;
+        }
+
+        .fly-plane-fallback.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        @keyframes fallbackPlaneFly {
+            0% { opacity: 0; transform: translate(-48vw, -22vh) rotate(-18deg) scale(0.42); }
+            12% { opacity: 0.82; }
+            82% { opacity: 0.82; }
+            100% { opacity: 0; transform: translate(42vw, 34vh) rotate(16deg) scale(1.2); }
         }
 
         .splash-video-watermark-cover {
@@ -2263,7 +2465,8 @@
     <div class="splash-screen" id="splashScreen">
         <div class="splash-skip" onclick="skipSplash()">跳过 →</div>
         
-        <!-- 飞行动画视频：隐藏原视频，用透明画布去黑底后显示 -->
+        <!-- 飞行动画视频：使用 screen 混合去除黑底，并提供静态兜底 -->
+        <img class="fly-plane-fallback" id="flyPlaneFallback" src="images/fly.webp" alt="" aria-hidden="true">
         <video class="fly-plane" id="flyPlane" autoplay muted playsinline loop preload="auto" aria-label="纸飞机飞行开场动画">
             <source src="asset/flying.mp4" type="video/mp4">
         </video>
@@ -2326,15 +2529,15 @@
                     
                     <div class="home-fan-icons" id="fanIcons">
                         <div class="home-fan-icon fan-1" onclick="handleFanClick('life')">
-                            <img src="images/icon-life.webp" alt="我的技能卡片" class="fan-icon-img">
+                            <img src="images/icon-life.webp" alt="我的技能卡片" class="fan-icon-img" loading="lazy" decoding="async">
                             <div class="fan-icon-text">我的技能卡片</div>
                         </div>
                         <div class="home-fan-icon fan-2" onclick="handleFanClick('practice')">
-                            <img src="images/icon-practice.webp" alt="实践与学工" class="fan-icon-img">
+                            <img src="images/icon-practice.webp" alt="实践与学工" class="fan-icon-img" loading="lazy" decoding="async">
                             <div class="fan-icon-text">实践与学工</div>
                         </div>
                         <div class="home-fan-icon fan-3" onclick="handleFanClick('portfolio')">
-                            <img src="images/icon-portfolio.webp" alt="作品集" class="fan-icon-img">
+                            <img src="images/icon-portfolio.webp" alt="作品集" class="fan-icon-img" loading="lazy" decoding="async">
                             <div class="fan-icon-text">作品集</div>
                         </div>
                     </div>
@@ -2361,31 +2564,31 @@
                 <div class="skills-stage">
                     <div class="skills-zone">
                         <button class="skill-card-button" type="button" data-skill="theory" aria-label="查看理论研读与学术写作技能">
-                            <img class="skill-card-icon" src="skill/skill1.webp" alt="">
+                            <img class="skill-card-icon" src="skill/skill1.webp" alt="" loading="lazy" decoding="async">
                             <span class="skill-card-copy"><span class="skill-card-name">理论研读<br>与学术写作</span><span class="skill-card-hint">文献 · 论文</span></span>
                         </button>
                         <button class="skill-card-button" type="button" data-skill="research" aria-label="查看调查研究与数字分析技能">
-                            <img class="skill-card-icon" src="skill/skill2.webp" alt="">
+                            <img class="skill-card-icon" src="skill/skill2.webp" alt="" loading="lazy" decoding="async">
                             <span class="skill-card-copy"><span class="skill-card-name">调查研究<br>与数字分析</span><span class="skill-card-hint">调研 · 数据</span></span>
                         </button>
                         <button class="skill-card-button" type="button" data-skill="teaching" aria-label="查看思政课程与教学设计技能">
-                            <img class="skill-card-icon" src="skill/skill3.webp" alt="">
+                            <img class="skill-card-icon" src="skill/skill3.webp" alt="" loading="lazy" decoding="async">
                             <span class="skill-card-copy"><span class="skill-card-name">思政课程<br>与教学设计</span><span class="skill-card-hint">课程 · 教学</span></span>
                         </button>
                         <button class="skill-card-button" type="button" data-skill="management" aria-label="查看项目统筹与组织管理技能">
-                            <img class="skill-card-icon" src="skill/skill4.webp" alt="">
+                            <img class="skill-card-icon" src="skill/skill4.webp" alt="" loading="lazy" decoding="async">
                             <span class="skill-card-copy"><span class="skill-card-name">项目统筹<br>与组织管理</span><span class="skill-card-hint">统筹 · 协作</span></span>
                         </button>
                         <button class="skill-card-button" type="button" data-skill="media" aria-label="查看新媒体传播与影像制作技能">
-                            <img class="skill-card-icon" src="skill/skill5.webp" alt="">
+                            <img class="skill-card-icon" src="skill/skill5.webp" alt="" loading="lazy" decoding="async">
                             <span class="skill-card-copy"><span class="skill-card-name">新媒体传播<br>与影像制作</span><span class="skill-card-hint">传播 · 影像</span></span>
                         </button>
                         <button class="skill-card-button" type="button" data-skill="visual" aria-label="查看视觉设计与沟通表达技能">
-                            <img class="skill-card-icon" src="skill/skill6.webp" alt="">
+                            <img class="skill-card-icon" src="skill/skill6.webp" alt="" loading="lazy" decoding="async">
                             <span class="skill-card-copy"><span class="skill-card-name">视觉设计<br>与沟通表达</span><span class="skill-card-hint">视觉 · 表达</span></span>
                         </button>
-                        <img class="skills-folder-art" src="skill/skill%20show.webp" alt="SKILL files 像素风技能文件夹">
-                        <button class="skills-folder-hitarea" id="skillsFolderHitarea" type="button" aria-label="展开技能卡片" aria-expanded="false" onclick="document.getElementById('skillsBoard').classList.toggle('skills-open'); this.setAttribute('aria-expanded', document.getElementById('skillsBoard').classList.contains('skills-open'))"></button>
+                        <img class="skills-folder-art" src="skill/skill%20show.webp" alt="SKILL files 像素风技能文件夹" loading="lazy" decoding="async">
+                        <button class="skills-folder-hitarea" id="skillsFolderHitarea" type="button" aria-label="展开技能卡片" aria-expanded="false" onclick="toggleSkillsBoard()"></button>
                         <div class="skills-folder-hint">悬停文件夹展开 · 点击卡片查看详情</div>
                         <div class="skill-detail-panel" id="skillDetailPanel" aria-live="polite">
                             <strong>选择一张技能卡片</strong>
@@ -2420,7 +2623,7 @@
                         <h3 class="card-title">易班学生发展中心 · 联络部部长</h3>
                         <span class="card-date">2023.09—2024.06</span>
                     </div>
-                    <div class="card-image"><img src="practice/易班学生发展中心联络部.webp" alt="易班学生发展中心联络部工作照片"></div>
+                    <div class="card-image"><img src="practice/易班学生发展中心联络部.webp" alt="易班学生发展中心联络部工作照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">统筹校院两级易班工作联动，策划并执行校级大型学生活动；承担活动组织协调、现场答疑与跨校骨干交流培训对接。</div>
                     <div class="card-meta">
                         <span>组织统筹</span>
@@ -2433,7 +2636,7 @@
                         <h3 class="card-title">第十六期“青马工程”培训班 · 分管组长</h3>
                         <span class="card-date">2024.06—2025.07</span>
                     </div>
-                    <div class="card-image"><img src="practice/青马工程.webp" alt="青马工程培训班工作照片"></div>
+                    <div class="card-image"><img src="practice/青马工程.webp" alt="青马工程培训班工作照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">负责小组学员管理、任务分工与进度跟进，策划并主持圆桌会议等理论学习研讨，参与微课录制与企业党建专项调研。</div>
                     <div class="card-meta">
                         <span>理论学习</span>
@@ -2446,7 +2649,7 @@
                         <h3 class="card-title">易班学生发展中心 · 主席</h3>
                         <span class="card-date">2024.07—2025.07</span>
                     </div>
-                    <div class="card-image"><img src="practice/易班学生发展中心主席.webp" alt="易班学生发展中心主席工作照片"></div>
+                    <div class="card-image"><img src="practice/易班学生发展中心主席.webp" alt="易班学生发展中心主席工作照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">分管办公室和内容部，负责工作站日常运行、场地设备与值班调度；策划校级品牌活动，接待高校调研队伍，牵头完善工作流程与制度手册。</div>
                     <div class="card-meta">
                         <span>学生组织管理</span>
@@ -2459,7 +2662,7 @@
                         <h3 class="card-title">马克思主义理论专业班级 · 团支书</h3>
                         <span class="card-date">2024.07—2026.07</span>
                     </div>
-                    <div class="card-image"><img src="practice/团支书.webp" alt="班级团支书工作照片"></div>
+                    <div class="card-image"><img src="practice/团支书.webp" alt="班级团支书工作照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">主持团支部日常工作，组织理论学习与主题团日，做好团员管理服务和思想引领；撰写申报材料，统筹支部获评校“五四红旗团支部”。</div>
                     <div class="card-meta">
                         <span>团支部建设</span>
@@ -2472,7 +2675,7 @@
                         <h3 class="card-title">马克思主义学院党建工作中心 · 教育培训部主任</h3>
                         <span class="card-date">2025.06—2026.06</span>
                     </div>
-                    <div class="card-image"><img src="practice/党建工作中心主任.webp" alt="党建工作中心工作照片"></div>
+                    <div class="card-image"><img src="practice/党建工作中心主任.webp" alt="党建工作中心工作照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">配合学院党委开展各级党校培训与课程管理，组织入党申请书征集审核，规范党员发展流程，统筹推优入党及档案材料归档。</div>
                     <div class="card-meta">
                         <span>党建工作</span>
@@ -2485,7 +2688,7 @@
                         <h3 class="card-title">南京师范大学学生工作处 · 思政助理</h3>
                         <span class="card-date">2025.09—2026.07</span>
                     </div>
-                    <div class="card-image"><img src="practice/思政助理.webp" alt="学生工作处思政助理工作照片"></div>
+                    <div class="card-image"><img src="practice/思政助理.webp" alt="学生工作处思政助理工作照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">协助完成易班课题结项项目书撰写，参与网络文化艺术节、十佳班级评选及培训班筹办，并承担思想教育科财务报送等基础事务。</div>
                     <div class="card-meta">
                         <span>思政教育</span>
@@ -2498,7 +2701,7 @@
                         <h3 class="card-title">大丰区妇女联合会 · 宣传部实习生</h3>
                         <span class="card-date">2024.07—2024.08</span>
                     </div>
-                    <div class="card-image"><img src="practice/大丰区妇女联合会.webp" alt="大丰区妇女联合会实习照片"></div>
+                    <div class="card-image"><img src="practice/大丰区妇女联合会.webp" alt="大丰区妇女联合会实习照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">撰写新闻稿，编辑并运营微信公众号，参与“盐家优教”家庭教育活动与书香文化月等线下活动的组织开展。</div>
                     <div class="card-meta">
                         <span>宣传实践</span>
@@ -2511,7 +2714,7 @@
                         <h3 class="card-title">兰考县谷营镇齐场小学 · 支教教师</h3>
                         <span class="card-date">2024.08—2024.09</span>
                     </div>
-                    <div class="card-image"><img src="practice/兰考县谷营镇齐场小学.webp" alt="齐场小学支教照片"></div>
+                    <div class="card-image"><img src="practice/兰考县谷营镇齐场小学.webp" alt="齐场小学支教照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">讲授“雨花英烈精神”主题思政课，参与活动课与户外体育教学；独立完成5期夏令营纪录片摄制剪辑，并设计发放学生调研问卷。</div>
                     <div class="card-meta">
                         <span>支教实践</span>
@@ -2524,7 +2727,7 @@
                         <h3 class="card-title">2203班公众号“贰贰叁号航行日志” · 编辑</h3>
                         <span class="card-date">2022.09—2026.07</span>
                     </div>
-                    <div class="card-image"><img src="practice/2203班公众号编辑.webp" alt="2203班公众号编辑工作照片"></div>
+                    <div class="card-image"><img src="practice/2203班公众号编辑.webp" alt="2203班公众号编辑工作照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">负责研学、心理班会与主题团课的影像记录，撰写推送、制作首图和展演物料，参与校十佳班级申报与材料排版。</div>
                     <div class="card-meta">
                         <span>新媒体运营</span>
@@ -2537,7 +2740,7 @@
                         <h3 class="card-title">盐城市大丰籍大学生驻外团工委 · 组织部部长</h3>
                         <span class="card-date">2026.08—至今</span>
                     </div>
-                    <div class="card-image"><img src="practice/驻外团工委.webp" alt="驻外团工委工作照片"></div>
+                    <div class="card-image"><img src="practice/驻外团工委.webp" alt="驻外团工委工作照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">协助统筹团务工作，负责团员联络管理与主题团日策划；牵头返乡大学生思想调研和青年交流活动，做好人员协调、资料整理与活动纪实。</div>
                     <div class="card-meta">
                         <span>现任</span>
@@ -2550,7 +2753,7 @@
                         <h3 class="card-title">暑期社会实践 · 乡村共富调研</h3>
                         <span class="card-date">2023.07—2023.08</span>
                     </div>
-                    <div class="card-image"><img src="practice/乡村共富调研.webp" alt="乡村共富调研照片"></div>
+                    <div class="card-image"><img src="practice/乡村共富调研.webp" alt="乡村共富调研照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">主持团队走访盐城、南京、苏州、泰州、宿迁等地13处乡村，调研乡村积分治理、数字农业与省级特色田园乡村发展经验，获优秀团队一等奖、优秀调研报告二等奖。</div>
                     <div class="card-meta">
                         <span>社会调研</span>
@@ -2563,7 +2766,7 @@
                         <h3 class="card-title">寒假社会实践 · 数智红色文化资源调查</h3>
                         <span class="card-date">2025.01—2025.02</span>
                     </div>
-                    <div class="card-image"><img src="practice/数智红色文化资源调查.webp" alt="数智红色文化资源调查照片"></div>
+                    <div class="card-image"><img src="practice/数智红色文化资源调查.webp" alt="数智红色文化资源调查照片" loading="lazy" decoding="async"></div>
                     <div class="card-description">主持全国“数智时代红色文化资源”调查，走访南京梅园新村等10余所红色场馆，开展资源记录与传播路径调研，获返家乡社会实践专项二等奖。</div>
                     <div class="card-meta">
                         <span>红色文化</span>
@@ -2588,7 +2791,7 @@
                 <!-- PPT作品 -->
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt1.webp" alt="PPT 1 支部述职">
+                        <img src="asset/ppt/ppt1.webp" alt="PPT 1 支部述职" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">PPT 1 · 支部述职</h3>
@@ -2601,7 +2804,7 @@
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt2.webp" alt="PPT 2 大创结题汇报">
+                        <img src="asset/ppt/ppt2.webp" alt="PPT 2 大创结题汇报" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">PPT 2 · 大创结题汇报</h3>
@@ -2614,7 +2817,7 @@
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt3.webp" alt="PPT 3 十佳班级展演">
+                        <img src="asset/ppt/ppt3.webp" alt="PPT 3 十佳班级展演" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">PPT 3 · 十佳班级展演</h3>
@@ -2627,7 +2830,7 @@
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt4.webp" alt="PPT 4 国创赛汇报">
+                        <img src="asset/ppt/ppt4.webp" alt="PPT 4 国创赛汇报" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">PPT 4 · 国创赛汇报</h3>
@@ -2640,7 +2843,7 @@
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt5.webp" alt="PPT 5 学工课题答辩">
+                        <img src="asset/ppt/ppt5.webp" alt="PPT 5 学工课题答辩" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">PPT 5 · 学工课题答辩</h3>
@@ -2653,7 +2856,7 @@
 
                 <div class="portfolio-card" data-category="ppt">
                     <div class="portfolio-preview portfolio-ppt-preview">
-                        <img src="asset/ppt/ppt6.webp" alt="PPT 6 大挑现场答辩">
+                        <img src="asset/ppt/ppt6.webp" alt="PPT 6 大挑现场答辩" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">PPT 6 · 大挑现场答辩</h3>
@@ -2667,7 +2870,7 @@
                 <!-- 可视化作品 -->
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis1.webp" alt="稼穑千年封面">
+                        <img src="asset/visual/vis1.webp" alt="稼穑千年封面" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">稼穑千年封面</h3>
@@ -2679,7 +2882,7 @@
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis2.webp" alt="篇章一 沃土生民">
+                        <img src="asset/visual/vis2.webp" alt="篇章一 沃土生民" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">篇章一 沃土生民</h3>
@@ -2691,7 +2894,7 @@
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis3.webp" alt="篇章二 利器成道">
+                        <img src="asset/visual/vis3.webp" alt="篇章二 利器成道" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">篇章二 利器成道</h3>
@@ -2703,7 +2906,7 @@
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis4.webp" alt="篇章三 沃水生金">
+                        <img src="asset/visual/vis4.webp" alt="篇章三 沃水生金" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">篇章三 沃水生金</h3>
@@ -2715,7 +2918,7 @@
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis5.webp" alt="篇章四 四时循律">
+                        <img src="asset/visual/vis5.webp" alt="篇章四 四时循律" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">篇章四 四时循律</h3>
@@ -2727,7 +2930,7 @@
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis6.webp" alt="篇章五 稼穑经纬">
+                        <img src="asset/visual/vis6.webp" alt="篇章五 稼穑经纬" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">篇章五 稼穑经纬</h3>
@@ -2739,7 +2942,7 @@
 
                 <div class="portfolio-card" data-category="visual">
                     <div class="portfolio-preview">
-                        <img src="asset/visual/vis7.webp" alt="篇章六 仓廪丰实">
+                        <img src="asset/visual/vis7.webp" alt="篇章六 仓廪丰实" loading="lazy" decoding="async">
                     </div>
                     <div class="portfolio-content">
                         <h3 class="portfolio-title">篇章六 仓廪丰实</h3>
@@ -2753,7 +2956,7 @@
                 <div class="portfolio-card" data-category="video">
                     <div class="portfolio-preview portfolio-video-preview">
                         <div class="portfolio-video">
-                            <video controls playsinline preload="metadata" poster="asset/video/video1%20show.webp">
+                            <video controls playsinline preload="none" poster="asset/video/video1%20show.webp">
                                 <source src="asset/video/video1.mp4" type="video/mp4">
                                 您的浏览器不支持视频播放
                             </video>
@@ -2770,7 +2973,7 @@
                 <div class="portfolio-card" data-category="video">
                     <div class="portfolio-preview portfolio-video-preview">
                         <div class="portfolio-video">
-                            <video controls playsinline preload="metadata" poster="asset/video/video2%20show.webp">
+                            <video controls playsinline preload="none" poster="asset/video/video2%20show.webp">
                                 <source src="asset/video/video2.mp4" type="video/mp4">
                                 您的浏览器不支持视频播放
                             </video>
@@ -2787,7 +2990,7 @@
                 <div class="portfolio-card" data-category="video">
                     <div class="portfolio-preview portfolio-video-preview">
                         <div class="portfolio-video">
-                            <video controls playsinline preload="metadata" poster="asset/video/video3%20show.webp">
+                            <video controls playsinline preload="none" poster="asset/video/video3%20show.webp">
                                 <source src="asset/video/video3.mp4" type="video/mp4">
                                 您的浏览器不支持视频播放
                             </video>
@@ -2805,7 +3008,7 @@
                 <div class="portfolio-card" data-category="drawing">
                     <div class="portfolio-preview portfolio-drawing-preview">
                         <a href="asset/drawing/drawing1.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本：袁咨桐-绽放的革命血在沸">
-                            <img src="asset/drawing/drawing1%20show.webp" alt="袁咨桐-绽放的革命血在沸">
+                            <img src="asset/drawing/drawing1%20show.webp" alt="袁咨桐-绽放的革命血在沸" loading="lazy" decoding="async">
                         </a>
                     </div>
                     <div class="portfolio-content">
@@ -2820,7 +3023,7 @@
                 <div class="portfolio-card" data-category="drawing">
                     <div class="portfolio-preview portfolio-drawing-preview">
                         <a href="asset/drawing/drawing2.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本：丁香-丁香花又开">
-                            <img src="asset/drawing/drawing2%20show.webp" alt="丁香-丁香花又开">
+                            <img src="asset/drawing/drawing2%20show.webp" alt="丁香-丁香花又开" loading="lazy" decoding="async">
                         </a>
                     </div>
                     <div class="portfolio-content">
@@ -2835,7 +3038,7 @@
                 <div class="portfolio-card" data-category="drawing">
                     <div class="portfolio-preview portfolio-drawing-preview">
                         <a href="asset/drawing/drawing3.pdf" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="查看完整绘本：郭凤韶-未完成的计划">
-                            <img src="asset/drawing/drawing3%20show.webp" alt="郭凤韶-未完成的计划">
+                            <img src="asset/drawing/drawing3%20show.webp" alt="郭凤韶-未完成的计划" loading="lazy" decoding="async">
                         </a>
                     </div>
                     <div class="portfolio-content">
@@ -2851,7 +3054,7 @@
                 <div class="portfolio-card" data-category="web">
                     <div class="portfolio-preview portfolio-web-preview">
                         <a href="https://cancancan510.github.io/semantic-erosion-archive/" target="_blank" rel="noopener" class="portfolio-cover-link" aria-label="打开网页作品：语义磨损档案馆">
-                            <img src="asset/web/semantic-erosion-archive-show.jpg" alt="语义磨损档案馆网页首屏">
+                            <img src="asset/web/semantic-erosion-archive-show.jpg" alt="语义磨损档案馆网页首屏" loading="lazy" decoding="async">
                         </a>
                     </div>
                     <div class="portfolio-content">
@@ -2949,80 +3152,51 @@
         document.addEventListener('DOMContentLoaded', function() {
             initTransparentFlyingVideo();
 
+            const splash = document.getElementById('splashScreen');
+            if (splash) {
+                splash.addEventListener('click', function(event) {
+                    if (!event.target.closest('.splash-skip')) skipSplash();
+                });
+            }
+
             setTimeout(function() {
                 skipSplash();
-            }, 3400);
+            }, window.innerWidth <= 720 ? 2600 : 3400);
         });
 
         function initTransparentFlyingVideo() {
             const video = document.getElementById('flyPlane');
             const canvas = document.getElementById('flyPlaneCanvas');
-            const watermarkCover = document.querySelector('.splash-video-watermark-cover');
-            if (!video || !canvas) return;
+            const fallback = document.getElementById('flyPlaneFallback');
+            if (!video) return;
 
-            const ctx = canvas.getContext('2d', { willReadFrequently: true });
-            if (!ctx) return;
+            // The video uses screen blending to remove its black background. Keeping
+            // the canvas out of the render loop avoids a costly per-frame pixel pass
+            // on phones and leaves a static paper-plane fallback for unsupported codecs.
+            const showVideo = () => {
+                video.style.visibility = 'visible';
+                if (canvas) canvas.style.display = 'none';
+                if (fallback) fallback.classList.add('is-hidden');
+            };
 
-            function syncCanvasSize() {
-                const width = video.videoWidth || 720;
-                const height = video.videoHeight || 720;
-                if (canvas.width !== width || canvas.height !== height) {
-                    canvas.width = width;
-                    canvas.height = height;
-                }
+            const showFallback = () => {
+                video.style.visibility = 'hidden';
+                if (canvas) canvas.style.display = 'none';
+                if (fallback) fallback.classList.remove('is-hidden');
+            };
+
+            video.addEventListener('canplay', showVideo, { once: true });
+            video.addEventListener('error', showFallback);
+            video.playbackRate = 0.8;
+            video.play().then(showVideo).catch(showFallback);
+
+            if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+                showVideo();
+            } else {
+                setTimeout(() => {
+                    if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) showFallback();
+                }, 1400);
             }
-
-            function renderFrame() {
-                if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
-                    syncCanvasSize();
-                    try {
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                        const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const data = frame.data;
-                        const watermarkLeft = Math.floor(canvas.width * 0.70);
-                        const watermarkTop = Math.floor(canvas.height * 0.78);
-
-                        for (let i = 0; i < data.length; i += 4) {
-                            const pixelIndex = i / 4;
-                            const x = pixelIndex % canvas.width;
-                            const y = Math.floor(pixelIndex / canvas.width);
-                            const red = data[i];
-                            const green = data[i + 1];
-                            const blue = data[i + 2];
-                            const brightness = Math.max(red, green, blue);
-                            const colorSpread = Math.max(red, green, blue) - Math.min(red, green, blue);
-                            const inWatermarkArea = x > watermarkLeft && y > watermarkTop;
-
-                            if (inWatermarkArea || (brightness < 52 && colorSpread < 34)) {
-                                data[i + 3] = 0;
-                            } else if (brightness < 92 && colorSpread < 42) {
-                                data[i + 3] = Math.min(data[i + 3], Math.round((brightness - 52) * 6));
-                            }
-                        }
-
-                        ctx.putImageData(frame, 0, 0);
-                        if (watermarkCover) {
-                            watermarkCover.style.display = 'none';
-                        }
-                    } catch (error) {
-                        video.style.visibility = 'visible';
-                        canvas.style.display = 'none';
-                        if (watermarkCover) {
-                            watermarkCover.style.display = 'block';
-                        }
-                        return;
-                    }
-                }
-
-                requestAnimationFrame(renderFrame);
-            }
-
-            video.playbackRate = 0.80;
-            video.addEventListener('loadedmetadata', syncCanvasSize, { once: true });
-            video.play().catch(() => {});
-            renderFrame();
         }
 
         // ===== 页面导航 =====
@@ -3045,6 +3219,8 @@
             if (activeLink) {
                 activeLink.classList.add('active');
             }
+
+            if (pageId === 'life') initSkillCards();
 
             window.location.hash = pageId;
 
@@ -3127,21 +3303,18 @@
 
         function toggleSkillsBoard() {
             const board = document.getElementById('skillsBoard');
-            if (board) board.classList.toggle('skills-open');
+            const folderHitarea = document.getElementById('skillsFolderHitarea');
+            if (!board) return;
+            const open = board.classList.toggle('skills-open');
+            if (folderHitarea) folderHitarea.setAttribute('aria-expanded', String(open));
         }
 
         function initSkillCards() {
             const board = document.getElementById('skillsBoard');
             const panel = document.getElementById('skillDetailPanel');
-            const folderHitarea = document.getElementById('skillsFolderHitarea');
             if (!board || !panel) return;
-
-            if (folderHitarea) {
-                folderHitarea.addEventListener('click', () => {
-                    const open = board.classList.toggle('skills-open');
-                    folderHitarea.setAttribute('aria-expanded', String(open));
-                });
-            }
+            if (board.dataset.skillCardsReady === 'true') return;
+            board.dataset.skillCardsReady = 'true';
 
             board.querySelectorAll('.skill-card-button').forEach(card => {
                 card.addEventListener('click', () => {
@@ -3203,6 +3376,16 @@
             hamburger.classList.toggle('active');
             navLinks.classList.toggle('active');
         }
+
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth > 768 || !event.target || event.target.closest('nav')) return;
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('navLinks');
+            if (navLinks && navLinks.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
 
         // ===== 路由 =====
         window.addEventListener('hashchange', () => {
