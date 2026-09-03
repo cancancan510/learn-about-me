@@ -2342,32 +2342,6 @@
             background: transparent;
         }
 
-        .fly-plane-fallback {
-            position: absolute;
-            left: 50%;
-            top: 42%;
-            z-index: 18;
-            width: min(300px, 48vw);
-            height: auto;
-            opacity: 0.82;
-            transform: translate(-48vw, -22vh) rotate(-18deg) scale(0.42);
-            pointer-events: none;
-            image-rendering: pixelated;
-            animation: fallbackPlaneFly 4.1s ease-in-out infinite;
-        }
-
-        .fly-plane-fallback.is-hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        @keyframes fallbackPlaneFly {
-            0% { opacity: 0; transform: translate(-48vw, -22vh) rotate(-18deg) scale(0.42); }
-            12% { opacity: 0.82; }
-            82% { opacity: 0.82; }
-            100% { opacity: 0; transform: translate(42vw, 34vh) rotate(16deg) scale(1.2); }
-        }
-
         .splash-video-watermark-cover {
             position: absolute;
             right: 0;
@@ -2465,8 +2439,7 @@
     <div class="splash-screen" id="splashScreen">
         <div class="splash-skip" onclick="skipSplash()">跳过 →</div>
         
-        <!-- 飞行动画视频：使用 screen 混合去除黑底，并提供静态兜底 -->
-        <img class="fly-plane-fallback" id="flyPlaneFallback" src="images/fly.webp" alt="" aria-hidden="true">
+        <!-- 飞行动画视频：使用 screen 混合去除黑底 -->
         <video class="fly-plane" id="flyPlane" autoplay muted playsinline loop preload="auto" aria-label="纸飞机飞行开场动画">
             <source src="asset/flying.mp4" type="video/mp4">
         </video>
@@ -3167,34 +3140,31 @@
         function initTransparentFlyingVideo() {
             const video = document.getElementById('flyPlane');
             const canvas = document.getElementById('flyPlaneCanvas');
-            const fallback = document.getElementById('flyPlaneFallback');
             if (!video) return;
 
             // The video uses screen blending to remove its black background. Keeping
-            // the canvas out of the render loop avoids a costly per-frame pixel pass
-            // on phones and leaves a static paper-plane fallback for unsupported codecs.
+            // Keep the canvas out of the render loop to avoid a costly per-frame
+            // pixel pass on phones.
             const showVideo = () => {
                 video.style.visibility = 'visible';
                 if (canvas) canvas.style.display = 'none';
-                if (fallback) fallback.classList.add('is-hidden');
             };
 
-            const showFallback = () => {
+            const hideVideo = () => {
                 video.style.visibility = 'hidden';
                 if (canvas) canvas.style.display = 'none';
-                if (fallback) fallback.classList.remove('is-hidden');
             };
 
             video.addEventListener('canplay', showVideo, { once: true });
-            video.addEventListener('error', showFallback);
+            video.addEventListener('error', hideVideo);
             video.playbackRate = 0.8;
-            video.play().then(showVideo).catch(showFallback);
+            video.play().then(showVideo).catch(hideVideo);
 
             if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
                 showVideo();
             } else {
                 setTimeout(() => {
-                    if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) showFallback();
+                    if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) hideVideo();
                 }, 1400);
             }
         }
